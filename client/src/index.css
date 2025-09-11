@@ -4,25 +4,25 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(0 0% 100%);
-  --foreground: hsl(0 0% 10%);
-  --card: hsl(0 0% 100%);
-  --card-foreground: hsl(0 0% 10%);
-  --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(0 0% 10%);
-  --primary: hsl(16 100% 50%);
-  --primary-foreground: hsl(0 0% 100%);
-  --secondary: hsl(0 0% 96%);
-  --secondary-foreground: hsl(0 0% 10%);
-  --muted: hsl(0 0% 96%);
-  --muted-foreground: hsl(0 0% 45%);
-  --accent: hsl(0 0% 96%);
-  --accent-foreground: hsl(0 0% 10%);
-  --destructive: hsl(0 84% 60%);
-  --destructive-foreground: hsl(0 0% 98%);
-  --border: hsl(0 0% 89%);
-  --input: hsl(0 0% 89%);
-  --ring: hsl(16 100% 50%);
+  --background: 0 0% 100%;
+  --foreground: 0 0% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 10%;
+  --primary: 16 100% 50%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 96%;
+  --secondary-foreground: 0 0% 10%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 45%;
+  --accent: 0 0% 96%;
+  --accent-foreground: 0 0% 10%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 89%;
+  --input: 0 0% 89%;
+  --ring: 16 100% 50%;
   --radius: 8px;
 
   /* Custom ShootXpress colors */
@@ -38,25 +38,25 @@
 }
 
 .dark {
-  --background: hsl(0 0% 0%);
-  --foreground: hsl(200 6.6667% 91.1765%);
-  --card: hsl(228 9.8039% 10%);
-  --card-foreground: hsl(0 0% 85.0980%);
-  --popover: hsl(0 0% 0%);
-  --popover-foreground: hsl(200 6.6667% 91.1765%);
-  --primary: hsl(16 100% 50%);
-  --primary-foreground: hsl(0 0% 100%);
-  --secondary: hsl(195.0000 15.3846% 94.9020%);
-  --secondary-foreground: hsl(210 25% 7.8431%);
-  --muted: hsl(0 0% 9.4118%);
-  --muted-foreground: hsl(210 3.3898% 46.2745%);
-  --accent: hsl(205.7143 70% 7.8431%);
-  --accent-foreground: hsl(203.7736 87.6033% 52.5490%);
-  --destructive: hsl(356.3033 90.5579% 54.3137%);
-  --destructive-foreground: hsl(0 0% 100%);
-  --border: hsl(210 5.2632% 14.9020%);
-  --input: hsl(207.6923 27.6596% 18.4314%);
-  --ring: hsl(202.8169 89.1213% 53.1373%);
+  --background: 0 0% 0%;
+  --foreground: 200 6.6667% 91.1765%;
+  --card: 228 9.8039% 10%;
+  --card-foreground: 0 0% 85.0980%;
+  --popover: 0 0% 0%;
+  --popover-foreground: 200 6.6667% 91.1765%;
+  --primary: 16 100% 50%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 195.0000 15.3846% 94.9020%;
+  --secondary-foreground: 210 25% 7.8431%;
+  --muted: 0 0% 9.4118%;
+  --muted-foreground: 210 3.3898% 46.2745%;
+  --accent: 205.7143 70% 7.8431%;
+  --accent-foreground: 203.7736 87.6033% 52.5490%;
+  --destructive: 356.3033 90.5579% 54.3137%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 210 5.2632% 14.9020%;
+  --input: 207.6923 27.6596% 18.4314%;
+  --ring: 202.8169 89.1213% 53.1373%;
 }
 
 @layer base {
@@ -116,19 +116,22 @@
     transform: scale(1.05);
   }
 
-  .btn-primary {
-    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-bold transition-all duration-300;
-  }
-
-  .btn-secondary {
-    @apply bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold transition-all duration-300;
-  }
 
   .text-gradient {
     background: linear-gradient(135deg, var(--shootx-black) 0%, var(--shootx-orange) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-bold transition-all duration-300;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold transition-all duration-300;
   }
 }
 
