@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
+import PaymentQR from "./payment-qr";
 
 interface BookingData {
   firstName: string;
@@ -42,6 +43,9 @@ const addOnPrices = {
 export default function BookingModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState('smart-shot');
+  const [showPaymentQR, setShowPaymentQR] = useState(false);
+  const [currentBooking, setCurrentBooking] = useState<any>(null);
+  const [qrData, setQrData] = useState<any>(null);
   const [formData, setFormData] = useState<BookingData>({
     firstName: "",
     lastName: "",
@@ -128,6 +132,9 @@ export default function BookingModal() {
 
   const closeModal = () => {
     setIsOpen(false);
+    setShowPaymentQR(false);
+    setCurrentBooking(null);
+    setQrData(null);
     document.body.style.overflow = 'auto';
   };
 
@@ -148,6 +155,21 @@ export default function BookingModal() {
       advanceAmount: 500,
       termsAccepted: false,
     });
+  };
+
+  const handlePaymentSuccess = () => {
+    toast({
+      title: "Payment Successful! 🎉",
+      description: "Your booking has been confirmed. You'll receive a confirmation email shortly.",
+    });
+    closeModal();
+    resetForm();
+  };
+
+  const handlePaymentCancel = () => {
+    setShowPaymentQR(false);
+    setCurrentBooking(null);
+    setQrData(null);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -192,6 +214,20 @@ export default function BookingModal() {
   }, [isOpen]);
 
   if (!isOpen) return null;
+
+  // Show payment QR if payment is needed
+  if (showPaymentQR && qrData && currentBooking) {
+    return (
+      <PaymentQR
+        qrString={qrData.data.qrString}
+        amount={formData.advanceAmount}
+        transactionId={qrData.data.transactionId}
+        bookingId={currentBooking.id}
+        onPaymentSuccess={handlePaymentSuccess}
+        onCancel={handlePaymentCancel}
+      />
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto" data-testid="booking-modal">

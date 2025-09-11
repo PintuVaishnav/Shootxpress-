@@ -1,89 +1,112 @@
-// Note: This would require the Razorpay SDK to be installed
-// For now, this is a placeholder implementation
+// PhonePe Payment Gateway Integration with Dynamic QR Code
+import crypto from 'crypto';
 
-interface RazorpayOrder {
-  id: string;
-  amount: number;
-  currency: string;
-  status: string;
+interface PhonePeQRResponse {
+  success: boolean;
+  code: string;
+  message: string;
+  data?: {
+    merchantId: string;
+    transactionId: string;
+    amount: number;
+    qrString: string;
+  };
 }
 
-interface CreateOrderParams {
+interface CreateQRParams {
   amount: number;
-  currency?: string;
-  receipt?: string;
-  notes?: Record<string, string>;
+  merchantOrderId: string;
+  userId?: string;
 }
 
 export class PaymentService {
-  private apiKey: string;
-  private apiSecret: string;
+  private merchantId: string;
+  private saltKey: string;
+  private saltIndex: string;
+  private baseUrl: string;
 
   constructor() {
-    this.apiKey = process.env.RAZORPAY_API_KEY || "";
-    this.apiSecret = process.env.RAZORPAY_API_SECRET || "";
+    this.merchantId = process.env.PHONEPE_MERCHANT_ID || "";
+    this.saltKey = process.env.PHONEPE_SALT_KEY || "";
+    this.saltIndex = process.env.PHONEPE_SALT_INDEX || "1";
+    this.baseUrl = process.env.PHONEPE_BASE_URL || "https://mercury-uat.phonepe.com/enterprise-sandbox";
     
-    if (!this.apiKey || !this.apiSecret) {
-      console.warn("Razorpay credentials not configured. Payment functionality will be limited.");
+    if (!this.merchantId || !this.saltKey) {
+      console.warn("PhonePe credentials not configured. Payment functionality will be limited.");
     }
   }
 
-  async createOrder(params: CreateOrderParams): Promise<RazorpayOrder | null> {
-    if (!this.apiKey || !this.apiSecret) {
-      console.warn("Razorpay credentials not configured");
+  generateSignature(payload: string): string {
+    const stringToSign = payload + this.saltKey;
+    return crypto.createHash('sha256').update(stringToSign).digest('hex');
+  }
+
+  async createDynamicQR(params: CreateQRParams): Promise<PhonePeQRResponse | null> {
+    if (!this.merchantId || !this.saltKey) {
+      console.warn("PhonePe credentials not configured");
       return null;
     }
 
     try {
-      // This would normally use the Razorpay SDK
-      // const Razorpay = require('razorpay');
-      // const razorpay = new Razorpay({
-      //   key_id: this.apiKey,
-      //   key_secret: this.apiSecret,
-      // });
+      const transactionId = `TX${Date.now()}${Math.floor(Math.random() * 1000)}`;
       
-      // const order = await razorpay.orders.create({
-      //   amount: params.amount * 100, // Convert to paise
-      //   currency: params.currency || 'INR',
-      //   receipt: params.receipt,
-      //   notes: params.notes,
-      // });
+      const payload = {
+        merchantId: this.merchantId,
+        transactionId: transactionId,
+        amount: params.amount * 100, // Convert to paise
+        expiresIn: 1800 // 30 minutes
+      };
+
+      const base64Payload = Buffer.from(JSON.stringify(payload)).toString('base64');
+      const signature = this.generateSignature(base64Payload);
       
-      // For now, return a mock order
-      const mockOrder: RazorpayOrder = {
-        id: `order_${Date.now()}`,
-        amount: params.amount,
-        currency: params.currency || 'INR',
-        status: 'created',
+      const headers = {
+        'Content-Type': 'application/json',
+        'X-VERIFY': `${signature}###${this.saltIndex}`,
+      };
+
+      // For demo purposes, return a mock response with UPI QR string
+      // In real implementation, you would make API call to PhonePe
+      const mockResponse: PhonePeQRResponse = {
+        success: true,
+        code: "SUCCESS",
+        message: "QR generated successfully",
+        data: {
+          merchantId: this.merchantId,
+          transactionId: transactionId,
+          amount: params.amount,
+          qrString: `upi://pay?pa=${this.merchantId}@ybl&pn=ShootXpress&am=${params.amount}&tr=${transactionId}&tn=Payment for ${params.merchantOrderId}&mc=5311&mode=04&purpose=00`
+        }
       };
       
-      return mockOrder;
+      return mockResponse;
     } catch (error) {
-      console.error('Error creating Razorpay order:', error);
+      console.error('Error creating PhonePe QR:', error);
       return null;
     }
   }
 
-  async verifyPayment(razorpayOrderId: string, razorpayPaymentId: string, razorpaySignature: string): Promise<boolean> {
-    if (!this.apiKey || !this.apiSecret) {
-      console.warn("Razorpay credentials not configured");
+  async checkPaymentStatus(transactionId: string): Promise<boolean> {
+    if (!this.merchantId || !this.saltKey) {
+      console.warn("PhonePe credentials not configured");
       return false;
     }
 
     try {
-      // This would normally verify the payment signature
-      // const crypto = require('crypto');
-      // const hmac = crypto.createHmac('sha256', this.apiSecret);
-      // hmac.update(razorpayOrderId + '|' + razorpayPaymentId);
-      // const generatedSignature = hmac.digest('hex');
-      // return generatedSignature === razorpaySignature;
-      
-      // For now, return true for demo purposes
+      // For demo purposes, return true after 30 seconds
+      // In real implementation, you would check payment status via PhonePe API
+      console.log(`Checking payment status for transaction: ${transactionId}`);
       return true;
     } catch (error) {
-      console.error('Error verifying payment:', error);
+      console.error('Error checking payment status:', error);
       return false;
     }
+  }
+
+  generateUPIQRCode(amount: number, transactionId: string, orderDescription: string): string {
+    // Generate UPI QR string that can be scanned by any UPI app including PhonePe
+    const upiString = `upi://pay?pa=shootxpress@paytm&pn=ShootXpress&am=${amount}&tr=${transactionId}&tn=${encodeURIComponent(orderDescription)}&mc=5311&mode=04&purpose=00`;
+    return upiString;
   }
 }
 

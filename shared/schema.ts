@@ -20,7 +20,7 @@ export const bookings = pgTable("bookings", {
   advanceAmount: integer("advance_amount").notNull(),
   paymentStatus: text("payment_status").default("pending"),
   paymentId: text("payment_id"),
-  razorpayOrderId: text("razorpay_order_id"),
+  phonepeTransactionId: text("phonepe_transaction_id"),
   status: text("status").default("pending"),
   termsAccepted: boolean("terms_accepted").notNull().default(false),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
@@ -53,7 +53,7 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   id: true,
   createdAt: true,
   paymentId: true,
-  razorpayOrderId: true,
+  phonepeTransactionId: true,
 }).extend({
   eventDate: z.string().transform((str) => new Date(str)),
 });

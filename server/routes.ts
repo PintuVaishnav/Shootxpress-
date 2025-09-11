@@ -99,26 +99,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Payment routes
-  app.post("/api/payment/create-order", async (req, res) => {
+  app.post("/api/payment/create-qr", async (req, res) => {
     try {
-      const { amount, receipt, notes } = req.body;
+      const { amount, bookingId } = req.body;
       
       if (!amount || amount <= 0) {
         return res.status(400).json({ message: "Invalid amount" });
       }
       
-      const order = await paymentService.createOrder({
+      const qrResponse = await paymentService.createDynamicQR({
         amount,
-        currency: 'INR',
-        receipt,
-        notes,
+        merchantOrderId: bookingId,
       });
       
-      if (!order) {
-        return res.status(500).json({ message: "Failed to create payment order" });
+      if (!qrResponse || !qrResponse.success) {
+        return res.status(500).json({ message: "Failed to create payment QR" });
       }
       
-      res.json(order);
+      res.json(qrResponse);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
@@ -126,25 +124,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/payment/verify", async (req, res) => {
     try {
-      const { razorpay_order_id, razorpay_payment_id, razorpay_signature, booking_id } = req.body;
+      const { transactionId, bookingId } = req.body;
       
-      const isValid = await paymentService.verifyPayment(
-        razorpay_order_id,
-        razorpay_payment_id,
-        razorpay_signature
-      );
+      const isValid = await paymentService.checkPaymentStatus(transactionId);
       
-      if (isValid && booking_id) {
+      if (isValid && bookingId) {
         // Update booking with payment details
-        await storage.updateBooking(booking_id, {
+        await storage.updateBooking(bookingId, {
           paymentStatus: "completed",
-          paymentId: razorpay_payment_id,
-          razorpayOrderId: razorpay_order_id,
+          paymentId: transactionId,
+          phonepeTransactionId: transactionId,
           status: "confirmed",
         });
       }
       
       res.json({ success: isValid });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Simulate payment completion for demo purposes
+  app.post("/api/payment/simulate-success", async (req, res) => {
+    try {
+      const { bookingId, transactionId } = req.body;
+      
+      // Update booking with payment details
+      await storage.updateBooking(bookingId, {
+        paymentStatus: "completed",
+        paymentId: transactionId,
+        phonepeTransactionId: transactionId,
+        status: "confirmed",
+      });
+      
+      res.json({ success: true, message: "Payment simulated successfully" });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
