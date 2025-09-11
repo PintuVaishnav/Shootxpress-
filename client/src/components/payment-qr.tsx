@@ -3,50 +3,26 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Clock, QrCode, Smartphone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import QRCodeLib from 'qrcode';
 
 interface PaymentQRProps {
-  qrString: string;
   amount: number;
-  transactionId: string;
   bookingId: string;
   onPaymentSuccess: () => void;
   onCancel: () => void;
 }
 
 export default function PaymentQR({
-  qrString,
   amount,
-  transactionId,
   bookingId,
   onPaymentSuccess,
   onCancel,
 }: PaymentQRProps) {
-  const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [isChecking, setIsChecking] = useState(false);
   const [timeLeft, setTimeLeft] = useState(1800); // 30 minutes
   const { toast } = useToast();
-
-  // Generate QR code image
-  useEffect(() => {
-    const generateQR = async () => {
-      try {
-        const dataUrl = await QRCodeLib.toDataURL(qrString, {
-          width: 256,
-          margin: 2,
-          color: {
-            dark: '#000000',
-            light: '#FFFFFF'
-          }
-        });
-        setQrDataUrl(dataUrl);
-      } catch (error) {
-        console.error('Error generating QR code:', error);
-      }
-    };
-
-    generateQR();
-  }, [qrString]);
+  
+  // Use static QR image from qr folder
+  const qrImagePath = "/qr/phonepe-qr.jpg"; // Place your QR image in client/public/qr/phonepe-qr.jpg
 
   // Countdown timer
   useEffect(() => {
@@ -72,6 +48,7 @@ export default function PaymentQR({
   const simulatePaymentSuccess = async () => {
     setIsChecking(true);
     try {
+      const transactionId = `TX${Date.now()}`;
       const response = await fetch('/api/payment/simulate-success', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -120,16 +97,14 @@ export default function PaymentQR({
                 <p className="text-sm text-gray-600">Advance Payment</p>
               </div>
 
-              {qrDataUrl && (
-                <div className="bg-white p-4 rounded-lg border-2 border-dashed border-gray-300">
-                  <img 
-                    src={qrDataUrl} 
-                    alt="PhonePe QR Code" 
-                    className="w-48 h-48 mx-auto"
-                    data-testid="payment-qr-code"
-                  />
-                </div>
-              )}
+              <div className="bg-white p-4 rounded-lg border-2 border-dashed border-gray-300">
+                <img 
+                  src={qrImagePath} 
+                  alt="PhonePe QR Code" 
+                  className="w-48 h-48 mx-auto object-contain"
+                  data-testid="payment-qr-code"
+                />
+              </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-center gap-2 text-orange-600">
@@ -139,7 +114,7 @@ export default function PaymentQR({
                   </span>
                 </div>
                 <p className="text-xs text-gray-500">
-                  Transaction ID: {transactionId}
+                  Booking ID: {bookingId}
                 </p>
               </div>
 

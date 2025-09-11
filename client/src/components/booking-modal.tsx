@@ -45,7 +45,6 @@ export default function BookingModal() {
   const [selectedPackage, setSelectedPackage] = useState('smart-shot');
   const [showPaymentQR, setShowPaymentQR] = useState(false);
   const [currentBooking, setCurrentBooking] = useState<any>(null);
-  const [qrData, setQrData] = useState<any>(null);
   const [formData, setFormData] = useState<BookingData>({
     firstName: "",
     lastName: "",
@@ -113,13 +112,10 @@ export default function BookingModal() {
       if (!response.ok) throw new Error('Failed to create booking');
       return response.json();
     },
-    onSuccess: () => {
-      toast({
-        title: "Booking Confirmed!",
-        description: "Your booking has been confirmed. You'll receive a confirmation email shortly.",
-      });
-      closeModal();
-      resetForm();
+    onSuccess: (booking) => {
+      setCurrentBooking(booking);
+      // Show payment QR modal with static QR
+      setShowPaymentQR(true);
     },
     onError: () => {
       toast({
@@ -134,7 +130,7 @@ export default function BookingModal() {
     setIsOpen(false);
     setShowPaymentQR(false);
     setCurrentBooking(null);
-    setQrData(null);
+
     document.body.style.overflow = 'auto';
   };
 
@@ -169,7 +165,7 @@ export default function BookingModal() {
   const handlePaymentCancel = () => {
     setShowPaymentQR(false);
     setCurrentBooking(null);
-    setQrData(null);
+
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -216,12 +212,10 @@ export default function BookingModal() {
   if (!isOpen) return null;
 
   // Show payment QR if payment is needed
-  if (showPaymentQR && qrData && currentBooking) {
+  if (showPaymentQR && currentBooking) {
     return (
       <PaymentQR
-        qrString={qrData.data.qrString}
         amount={formData.advanceAmount}
-        transactionId={qrData.data.transactionId}
         bookingId={currentBooking.id}
         onPaymentSuccess={handlePaymentSuccess}
         onCancel={handlePaymentCancel}
