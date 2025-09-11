@@ -181,8 +181,6 @@ export default function BookingModal() {
     window.dispatchEvent(event);
   };
 
-  if (!isOpen) return null;
-
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -192,6 +190,8 @@ export default function BookingModal() {
       document.body.style.overflow = 'auto';
     };
   }, [isOpen]);
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto" data-testid="booking-modal">
