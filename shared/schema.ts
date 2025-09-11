@@ -54,6 +54,8 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   createdAt: true,
   paymentId: true,
   razorpayOrderId: true,
+}).extend({
+  eventDate: z.string().transform((str) => new Date(str)),
 });
 
 export const insertContactSchema = createInsertSchema(contacts).omit({
