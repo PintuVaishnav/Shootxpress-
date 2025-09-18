@@ -15,21 +15,21 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://www.instagram.com/shootxpress_/"
                 className="text-gray-300 hover:text-primary transition-colors"
                 data-testid="footer-instagram"
               >
                 <Instagram className="h-6 w-6" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/junior_stylishstar__27/"
                 className="text-gray-300 hover:text-primary transition-colors"
                 data-testid="footer-whatsapp"
               >
                 <MessageSquare className="h-6 w-6" />
               </a>
               <a
-                href="#"
+                href="https://www.youtube.com/@SANVITHVLOGS/featured"
                 className="text-gray-300 hover:text-primary transition-colors"
                 data-testid="footer-youtube"
               >
@@ -64,11 +64,12 @@ export default function Footer() {
             <ul className="space-y-2 text-gray-300">
               <li className="flex items-center">
                 <span className="mr-2">📞</span>
-                +91 98181 86301
+                +91 81868 31230
+
               </li>
               <li className="flex items-center">
                 <span className="mr-2">✉️</span>
-                info@shootxpress.com
+                shootxpress27@gmail.com
               </li>
               <li className="flex items-center">
                 <span className="mr-2">📍</span>
@@ -79,7 +80,7 @@ export default function Footer() {
         </div>
         
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
-          <p>&copy; 2024 ShootXpress. All rights reserved.</p>
+          <p>&copy; 2025 ShootXpress. All rights reserved.</p>
         </div>
       </div>
     </footer>

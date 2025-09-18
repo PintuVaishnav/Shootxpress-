@@ -45,7 +45,7 @@ export default function Hero() {
             <Button
               onClick={scrollToPackages}
               variant="outline"
-              className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-4 rounded-lg text-lg font-bold transition-all duration-300"
+              className="border-2 border-white text-black hover:bg-white hover:text-black px-8 py-4 rounded-lg text-lg font-bold transition-all duration-300"
               data-testid="hero-packages-button"
             >
               View Packages

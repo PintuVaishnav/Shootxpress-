@@ -412,6 +412,7 @@ export default function BookingModal() {
                   <h4 className="font-bold text-foreground mb-2">Terms & Conditions</h4>
                   <div className="text-sm text-muted-foreground space-y-1">
                     <p>• 50% advance payment required to confirm booking</p>
+                    <p>• Travel expenses are to be borne by the client</p>
                     <p>• Cancellations must be informed 24 hours in advance</p>
                     <p>• Last-minute cancellations are non-refundable</p>
                     <p>• RAW footage will not be shared under any package</p>

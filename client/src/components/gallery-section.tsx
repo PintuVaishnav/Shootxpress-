@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { Portfolio } from "@shared/schema";
 
-const categories = ["All", "Events", "Portraits", "Reels", "Corporate"];
+const categories = ["All", "Events", "Portraits", "Reels"];
 
 export default function GallerySection() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -13,8 +13,8 @@ export default function GallerySection() {
   const { data: portfolio = [], isLoading } = useQuery<Portfolio[]>({
     queryKey: ['/api/portfolio', activeCategory === "All" ? undefined : activeCategory.toLowerCase()],
     queryFn: async () => {
-      const url = activeCategory === "All" 
-        ? '/api/portfolio' 
+      const url = activeCategory === "All"
+        ? '/api/portfolio'
         : `/api/portfolio?category=${encodeURIComponent(activeCategory)}`;
       const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to fetch portfolio');
@@ -33,25 +33,24 @@ export default function GallerySection() {
             Discover the moments we've captured and the stories we've told
           </p>
         </div>
-        
+
         {/* Gallery Filter */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
           {categories.map((category) => (
             <Button
               key={category}
               onClick={() => setActiveCategory(category)}
-              className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
-                activeCategory === category
+              className={`px-6 py-2 rounded-lg font-semibold transition-colors ${activeCategory === category
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground'
-              }`}
+                }`}
               data-testid={`filter-${category.toLowerCase()}`}
             >
               {category}
             </Button>
           ))}
         </div>
-        
+
         {/* Gallery Grid */}
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -62,12 +61,12 @@ export default function GallerySection() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {portfolio.map((item) => (
-              <Card 
+              <Card
                 key={item.id}
                 className="group relative overflow-hidden rounded-xl shadow-lg aspect-square border-0"
                 data-testid={`portfolio-item-${item.id}`}
               >
-                <img 
+                <img
                   src={item.imageUrl}
                   alt={item.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
@@ -78,6 +77,13 @@ export default function GallerySection() {
                       size="sm"
                       className="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-semibold mb-2"
                       data-testid={`view-item-${item.id}`}
+                      onClick={() => {
+                        if (item.isVideo && item.videoUrl) {
+                          window.open(item.videoUrl, "_blank"); // opens video in new tab
+                        } else {
+                          console.log("No video URL available");
+                        }
+                      }}
                     >
                       {item.isVideo ? (
                         <>
@@ -91,6 +97,7 @@ export default function GallerySection() {
                         </>
                       )}
                     </Button>
+
                     <div className="text-sm font-medium">{item.title}</div>
                     <div className="text-xs opacity-75">{item.category}</div>
                   </div>
@@ -99,7 +106,7 @@ export default function GallerySection() {
             ))}
           </div>
         )}
-        
+
         {portfolio.length === 0 && !isLoading && (
           <div className="text-center py-12">
             <div className="text-xl text-muted-foreground">
@@ -107,7 +114,7 @@ export default function GallerySection() {
             </div>
           </div>
         )}
-        
+
         <div className="text-center mt-12">
           <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-lg font-bold transition-colors duration-200">
             View Full Portfolio

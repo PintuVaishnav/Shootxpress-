@@ -141,7 +141,7 @@ export default function PackagesSection() {
           <Card className="border border-border">
             <CardContent className="p-6">
               <div className="bg-primary text-primary-foreground text-center py-2 rounded-lg mb-4">
-                <h4 className="font-black">PHOTOS</h4>
+                <h4 className="font-black">PHOTOS PACKAGE</h4>
               </div>
               <div className="space-y-3">
                 <div>• Candid Traditional photos</div>

@@ -45,6 +45,7 @@ export const portfolio = pgTable("portfolio", {
   category: text("category").notNull(),
   imageUrl: text("image_url").notNull(),
   isVideo: boolean("is_video").default(false),
+  videoUrl: text("video_url").notNull(),
   featured: boolean("featured").default(false),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });

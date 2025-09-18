@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
+import { qr } from "public/qr";
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -199,7 +200,7 @@ export default function ContactSection() {
                     </div>
                     <div>
                       <div className="font-semibold text-foreground">Phone</div>
-                      <div className="text-muted-foreground">+91 98181 86301</div>
+                      <div className="text-muted-foreground">+91 81868 31230</div>
                     </div>
                   </div>
                   
@@ -209,7 +210,7 @@ export default function ContactSection() {
                     </div>
                     <div>
                       <div className="font-semibold text-foreground">Email</div>
-                      <div className="text-muted-foreground">info@shootxpress.com</div>
+                      <div className="text-muted-foreground">shootxpress27@gmail.com</div>
                     </div>
                   </div>
                   
@@ -232,21 +233,21 @@ export default function ContactSection() {
                 <h3 className="text-2xl font-bold text-foreground mb-6">Follow Us</h3>
                 <div className="flex space-x-4">
                   <a
-                    href="#"
+                    href="https://www.instagram.com/shootxpress_/"
                     className="bg-primary text-primary-foreground rounded-full p-3 hover:bg-primary/90 transition-colors"
                     data-testid="social-instagram"
                   >
                     <Instagram className="h-6 w-6" />
                   </a>
                   <a
-                    href="#"
+                    href="https://www.instagram.com/junior_stylishstar__27/"
                     className="bg-primary text-primary-foreground rounded-full p-3 hover:bg-primary/90 transition-colors"
                     data-testid="social-whatsapp"
                   >
                     <MessageSquare className="h-6 w-6" />
                   </a>
                   <a
-                    href="#"
+                    href="https://www.youtube.com/@SANVITHVLOGS/featured"
                     className="bg-primary text-primary-foreground rounded-full p-3 hover:bg-primary/90 transition-colors"
                     data-testid="social-youtube"
                   >
@@ -261,7 +262,7 @@ export default function ContactSection() {
               <CardContent className="p-8 text-center">
                 <h3 className="text-xl font-bold text-foreground mb-4">Scan to Connect</h3>
                 <div className="w-32 h-32 bg-secondary rounded-lg mx-auto flex items-center justify-center mb-4">
-                  <QrCode className="h-16 w-16 text-muted-foreground" />
+                  <img src="../public/qr/instaqr.jpg" alt="QR Code" width={96} height={96} />
                 </div>
                 <p className="text-sm text-muted-foreground">Scan with your camera to visit our Instagram</p>
               </CardContent>
