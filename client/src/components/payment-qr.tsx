@@ -99,7 +99,7 @@ export default function PaymentQR({
 
               <div className="bg-white p-4 rounded-lg border-2 border-dashed border-gray-300">
                 <img 
-                  src={qrImagePath} 
+                  src="https://raw.githubusercontent.com/PintuVaishanv/shootxpress/refs/heads/main/phonepe-qr.jpg" 
                   alt="PhonePe QR Code" 
                   className="w-48 h-48 mx-auto object-contain"
                   data-testid="payment-qr-code"

@@ -261,7 +261,7 @@ export default function ContactSection() {
               <CardContent className="p-8 text-center">
                 <h3 className="text-xl font-bold text-foreground mb-4">Scan to Connect</h3>
                 <div className="w-32 h-32 bg-secondary rounded-lg mx-auto flex items-center justify-center mb-4">
-                  <img src="../public/qr/instaqr.jpg" alt="QR Code" width={96} height={96} />
+                  <img src="https://raw.githubusercontent.com/PintuVaishanv/shootxpress/refs/heads/main/instaqr.jpg" alt="QR Code" width={96} height={96} />
                 </div>
                 <p className="text-sm text-muted-foreground">Scan with your camera to visit our Instagram</p>
               </CardContent>
