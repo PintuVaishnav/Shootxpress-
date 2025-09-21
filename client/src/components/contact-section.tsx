@@ -8,7 +8,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { qr } from "public/qr";
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -24,7 +23,7 @@ export default function ContactSection() {
 
   const submitContact = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const response = await fetch('/api/contacts', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/contacts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

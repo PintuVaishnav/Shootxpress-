@@ -1,7 +1,17 @@
 import express, { type Request, Response, NextFunction } from "express";
+import cors from "cors";
 import { registerRoutes } from "./routes";
 
 const app = express();
+
+// Enable CORS
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:5173", // frontend URL
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -21,14 +31,8 @@ app.use((req, res, next) => {
     const duration = Date.now() - start;
     if (path.startsWith("/api")) {
       let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
+      if (capturedJsonResponse) logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
+      if (logLine.length > 80) logLine = logLine.slice(0, 79) + "…";
       console.log(logLine);
     }
   });
@@ -46,9 +50,6 @@ app.use((req, res, next) => {
     res.status(status).json({ message });
     console.error(err);
   });
-
-  // Backend only: do NOT setup Vite or serve frontend
-  // Frontend should be deployed separately as a static site
 
   const port = parseInt(process.env.PORT || "5000", 10);
   server.listen(port, () => {

@@ -104,11 +104,12 @@ export default function BookingModal() {
 
   const createBooking = useMutation({
     mutationFn: async (data: BookingData) => {
-      const response = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/bookings`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(data),
+});
+
       if (!response.ok) throw new Error('Failed to create booking');
       return response.json();
     },

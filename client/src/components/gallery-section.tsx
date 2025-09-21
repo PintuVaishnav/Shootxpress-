@@ -11,11 +11,12 @@ export default function GallerySection() {
   const [activeCategory, setActiveCategory] = useState("All");
 
   const { data: portfolio = [], isLoading } = useQuery<Portfolio[]>({
-    queryKey: ['/api/portfolio', activeCategory === "All" ? undefined : activeCategory.toLowerCase()],
+    queryKey: ['/portfolio', activeCategory === "All" ? undefined : activeCategory.toLowerCase()],
     queryFn: async () => {
+      const baseUrl = import.meta.env.VITE_API_URL; // use env variable
       const url = activeCategory === "All"
-        ? '/api/portfolio'
-        : `/api/portfolio?category=${encodeURIComponent(activeCategory)}`;
+        ? `${baseUrl}/portfolio`
+        : `${baseUrl}/portfolio?category=${encodeURIComponent(activeCategory)}`;
       const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to fetch portfolio');
       return response.json();
@@ -44,7 +45,6 @@ export default function GallerySection() {
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground'
                 }`}
-              data-testid={`filter-${category.toLowerCase()}`}
             >
               {category}
             </Button>
@@ -64,7 +64,6 @@ export default function GallerySection() {
               <Card
                 key={item.id}
                 className="group relative overflow-hidden rounded-xl shadow-lg aspect-square border-0"
-                data-testid={`portfolio-item-${item.id}`}
               >
                 <img
                   src={item.imageUrl}
@@ -76,10 +75,9 @@ export default function GallerySection() {
                     <Button
                       size="sm"
                       className="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-semibold mb-2"
-                      data-testid={`view-item-${item.id}`}
                       onClick={() => {
                         if (item.isVideo && item.videoUrl) {
-                          window.open(item.videoUrl, "_blank"); // opens video in new tab
+                          window.open(item.videoUrl, "_blank");
                         } else {
                           console.log("No video URL available");
                         }
@@ -97,7 +95,6 @@ export default function GallerySection() {
                         </>
                       )}
                     </Button>
-
                     <div className="text-sm font-medium">{item.title}</div>
                     <div className="text-xs opacity-75">{item.category}</div>
                   </div>
