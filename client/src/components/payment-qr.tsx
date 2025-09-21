@@ -49,7 +49,7 @@ export default function PaymentQR({
     setIsChecking(true);
     try {
       const transactionId = `TX${Date.now()}`;
-     const response = await fetch(`${import.meta.env.VITE_API_URL}/apipayment/simulate-success`, {
+     const response = await fetch(`${import.meta.env.VITE_API_URL}/api/payment/simulate-success`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ bookingId, transactionId }),
