@@ -8,7 +8,7 @@ const app = express();
 app.use(
   cors({
     origin: process.env.NODE_ENV === 'production' 
-      ? 'https://shootxpress.vercel.app/' // Add your actual Vercel URLs
+      ? 'https://shootxpress.vercel.app' // Add your actual Vercel URLs
       : 'http://localhost:5173',
     credentials: true
   })
