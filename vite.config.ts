@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -9,26 +8,20 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   plugins: [
     react(),
-    runtimeErrorOverlay(),
-    ...(process.env.NODE_ENV !== "production" &&
-    process.env.REPL_ID !== undefined
-      ? [
-          await import("@replit/vite-plugin-cartographer").then((m) =>
-            m.cartographer()
-          ),
-        ]
-      : []),
+    // remove Replit-only plugins for production
+    // If you really want them in dev, you can wrap with NODE_ENV check:
+    // ...(process.env.NODE_ENV === "development" ? [runtimeErrorOverlay()] : [])
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "client/src"), // points inside client now
-      "@shared": path.resolve(__dirname, "shared"),
+      "@": path.resolve(__dirname, "client/src"),   // alias for client code
+      "@shared": path.resolve(__dirname, "shared"), // shared schemas/models
       "@assets": path.resolve(__dirname, "attached_assets"),
     },
   },
-  root: path.resolve(__dirname, "client"), // Vite root is client folder
+  root: path.resolve(__dirname, "client"), // frontend root
   build: {
-    outDir: path.resolve(__dirname, "dist/public"), // output in root/dist/public
+    outDir: path.resolve(__dirname, "dist/public"), // output in dist/public
     emptyOutDir: true,
   },
   server: {
@@ -37,7 +30,7 @@ export default defineConfig({
       deny: ["**/.*"],
     },
     proxy: {
-      "/api": "http://localhost:5000",
+      "/api": "http://localhost:5000", // local API forward
     },
   },
 });
