@@ -15,8 +15,8 @@ export default function GallerySection() {
     queryFn: async () => {
       const baseUrl = import.meta.env.VITE_API_URL; // use env variable
       const url = activeCategory === "All"
-        ? `${baseUrl}/portfolio`
-        : `${baseUrl}/portfolio?category=${encodeURIComponent(activeCategory)}`;
+        ? `${baseUrl}/apiportfolio`
+        : `${baseUrl}/apiportfolio?category=${encodeURIComponent(activeCategory)}`;
       const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to fetch portfolio');
       return response.json();

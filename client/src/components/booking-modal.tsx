@@ -104,7 +104,7 @@ export default function BookingModal() {
 
   const createBooking = useMutation({
     mutationFn: async (data: BookingData) => {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/bookings`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/apibookings`, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify(data),

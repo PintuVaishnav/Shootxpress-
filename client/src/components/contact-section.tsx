@@ -23,7 +23,7 @@ export default function ContactSection() {
 
   const submitContact = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/contacts`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/apicontacts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

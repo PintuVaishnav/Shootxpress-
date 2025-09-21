@@ -99,7 +99,7 @@ export default function PackagesSection() {
                 
                 <div className="text-center">
                   <div className="text-3xl font-black text-foreground mb-4" data-testid={`price-${pkg.id}`}>
-                    ₹{pkg.price}/-
+                    ₹{pkg.price}/api-
                   </div>
                   <Button 
                     onClick={() => selectPackage(pkg.id)}
