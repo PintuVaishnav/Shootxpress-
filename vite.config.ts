@@ -21,7 +21,7 @@ export default defineConfig({
   },
   root: path.resolve(__dirname, "client"), // frontend root
   build: {
-    outDir: path.resolve(__dirname, "dist/public"), // output in dist/public
+    outDir: path.resolve(__dirname, "dist"), // output in dist/public
     emptyOutDir: true,
   },
   server: {
