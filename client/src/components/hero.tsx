@@ -21,7 +21,7 @@ export default function Hero() {
         <div className="absolute top-10 left-10 w-32 h-6 bg-primary transform -rotate-12"></div>
         <div className="absolute bottom-20 right-16 w-40 h-8 bg-primary transform rotate-45"></div>
       </div>
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <div className="animate-fade-in">
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-tight">
@@ -30,11 +30,10 @@ export default function Hero() {
             INSTANTLY
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            Professional photography and videography with same-day reel delivery. 
-            Transform your events into stunning visual stories.
+            We specialize in creating high-quality reels with same-day delivery, backed by a complete professional photography setup to capture every moment perfectly.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
+            <Button
               onClick={openBookingModal}
               className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-lg text-lg font-bold transition-all duration-300 transform hover:scale-105"
               data-testid="hero-book-button"
@@ -53,7 +52,7 @@ export default function Hero() {
           </div>
         </div>
       </div>
-      
+
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
         <div className="animate-bounce">

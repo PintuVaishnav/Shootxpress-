@@ -246,7 +246,7 @@ export default function ContactSection() {
                     <MessageSquare className="h-6 w-6" />
                   </a>
                   <a
-                    href="https://www.youtube.com/@SANVITHVLOGS/featured"
+                    href="https://youtube.com/@shootxpress27?si=r0sot-1Neryb6M77"
                     className="bg-primary text-primary-foreground rounded-full p-3 hover:bg-primary/90 transition-colors"
                     data-testid="social-youtube"
                   >

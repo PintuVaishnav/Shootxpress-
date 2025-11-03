@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import PaymentQR from "./payment-qr";
+import emailjs from "@emailjs/browser";
 
 interface BookingData {
   firstName: string;
@@ -106,10 +107,10 @@ export default function BookingModal() {
   const createBooking = useMutation({
     mutationFn: async (data: BookingData) => {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/bookings`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(data),
-});
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
 
       if (!response.ok) throw new Error('Failed to create booking');
       return response.json();
@@ -149,11 +150,53 @@ export default function BookingModal() {
       packageType: 'smart-shot',
       addOns: [],
       specialRequirements: "",
-      totalAmount: 1200,
-      advanceAmount: 600,
+      totalAmount: 1499,
+      advanceAmount: 750,
       termsAccepted: false,
     });
   };
+  const handleUPIPayment = () => {
+  const upiId = "sanvithbunny@ybl"; // 🔹 Replace with your UPI ID
+  const amount = formData.advanceAmount || "100";
+  const name = `${formData.firstName} ${formData.lastName}`;
+  const note = `Advance payment for ${formData.packageType} by ${name}`;
+
+  const upiLink = `upi://pay?pa=${upiId}&pn=ShootXPress&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;
+
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  if (isMobile) {
+    // 🔹 Opens directly in UPI app (Google Pay / PhonePe / Paytm)
+    window.location.href = upiLink;
+  } else {
+    // 🔹 Desktop fallback: Show QR + UPI ID
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiLink)}`;
+    const qrPopup = window.open("", "QR", "width=320,height=420");
+    qrPopup?.document.write(`
+      <div style="text-align:center;font-family:sans-serif;padding:15px;">
+        <h3>Scan to Pay via UPI</h3>
+        <img src="${qrUrl}" style="width:220px;height:220px;margin:10px 0;"/>
+        <p style="font-size:16px;margin:5px 0;">💰 Amount: <b>₹${amount}</b></p>
+        <p style="font-size:14px;margin:5px 0;">📦 ${formData.packageType}</p>
+        <p style="font-size:14px;margin:10px 0;">or pay manually using:</p>
+        <p style="font-size:18px;font-weight:bold;color:#333;">${upiId}</p>
+      </div>
+    `);
+  }
+
+  // 🔹 Confirm after a few seconds
+  setTimeout(() => {
+    const confirmed = window.confirm("Did you complete the payment?");
+    if (confirmed) handlePaymentSuccess();
+    else {
+      toast({
+        title: "Payment Pending ⚠️",
+        description: "Please complete the UPI payment to confirm your booking.",
+      });
+    }
+  }, 4000);
+};
+
 
   const handlePaymentSuccess = () => {
     toast({
@@ -180,7 +223,9 @@ export default function BookingModal() {
       });
       return;
     }
-    createBooking.mutate(formData);
+
+    // Instead of Razorpay or QR, we trigger UPI redirect directly
+    handleUPIPayment();
   };
 
   const handleInputChange = (field: string, value: string | string[] | boolean) => {
@@ -190,7 +235,7 @@ export default function BookingModal() {
   const handleAddOnChange = (addon: string, checked: boolean) => {
     setFormData(prev => ({
       ...prev,
-      addOns: checked 
+      addOns: checked
         ? [...prev.addOns, addon]
         : prev.addOns.filter(a => a !== addon)
     }));
@@ -243,7 +288,7 @@ export default function BookingModal() {
                 <X className="h-6 w-6" />
               </Button>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Package Selection */}
               <div>
@@ -253,14 +298,14 @@ export default function BookingModal() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="smart-shot">Smart Shot - ₹1200</SelectItem>
-                    <SelectItem value="xpress-pro">Xpress Pro - ₹2199</SelectItem>
-                    <SelectItem value="xpress-pro">Xpress Pro+ - ₹3499</SelectItem>
-                    <SelectItem value="xpress-max">Xpress Max - ₹4799</SelectItem>
+                    <SelectItem value="smart-shot">Smart Shot - ₹1499</SelectItem>
+                    <SelectItem value="xpress-pro">Xpress Pro - ₹2499</SelectItem>
+                    <SelectItem value="xpress-pro">Xpress Pro+ - ₹3999</SelectItem>
+                    <SelectItem value="xpress-max">Xpress Max - ₹4999</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              
+
               {/* Personal Information */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -286,7 +331,7 @@ export default function BookingModal() {
                   />
                 </div>
               </div>
-              
+
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <Label className="block text-sm font-medium text-foreground mb-2">Email *</Label>
@@ -311,7 +356,7 @@ export default function BookingModal() {
                   />
                 </div>
               </div>
-              
+
               {/* Event Details */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -335,7 +380,7 @@ export default function BookingModal() {
                   />
                 </div>
               </div>
-              
+
               <div>
                 <Label className="block text-sm font-medium text-foreground mb-2">Event Type *</Label>
                 <Select value={formData.eventType} onValueChange={(value) => handleInputChange('eventType', value)} required>
@@ -351,7 +396,7 @@ export default function BookingModal() {
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div>
                 <Label className="block text-sm font-medium text-foreground mb-2">Event Location *</Label>
                 <Input
@@ -363,7 +408,7 @@ export default function BookingModal() {
                   data-testid="input-event-location"
                 />
               </div>
-              
+
               {/* Add-ons */}
               <div>
                 <Label className="block text-sm font-medium text-foreground mb-3">Add-ons</Label>
@@ -375,7 +420,7 @@ export default function BookingModal() {
                       onCheckedChange={(checked) => handleAddOnChange('extra-video', checked as boolean)}
                       data-testid="addon-extra-video"
                     />
-                    <Label htmlFor="extra-video">Extra Video (+₹600)</Label>
+                    <Label htmlFor="extra-video">Extra Video (+₹700)</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox
@@ -384,7 +429,7 @@ export default function BookingModal() {
                       onCheckedChange={(checked) => handleAddOnChange('traditional-photos', checked as boolean)}
                       data-testid="addon-traditional-photos"
                     />
-                    <Label htmlFor="traditional-photos">Traditional Photos (+₹500)</Label>
+                    <Label htmlFor="traditional-photos">Traditional Photos (+₹1000)</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox
@@ -393,11 +438,11 @@ export default function BookingModal() {
                       onCheckedChange={(checked) => handleAddOnChange('extra-hour', checked as boolean)}
                       data-testid="addon-extra-hour"
                     />
-                    <Label htmlFor="extra-hour">Extra Hour (+₹800/hour)</Label>
+                    <Label htmlFor="extra-hour">Extra Hour (+₹900/hour)</Label>
                   </div>
                 </div>
               </div>
-              
+
               <div>
                 <Label className="block text-sm font-medium text-foreground mb-2">Special Requirements</Label>
                 <Textarea
@@ -408,7 +453,7 @@ export default function BookingModal() {
                   data-testid="textarea-special-requirements"
                 />
               </div>
-              
+
               {/* Terms & Conditions */}
               <Card className="bg-secondary">
                 <CardContent className="p-4">
@@ -443,7 +488,7 @@ export default function BookingModal() {
                   </div>
                 </CardContent>
               </Card>
-              
+
               {/* Payment Summary */}
               <Card className="border border-border">
                 <CardContent className="p-4">
@@ -470,7 +515,7 @@ export default function BookingModal() {
                   </div>
                 </CardContent>
               </Card>
-              
+
               {/* Submit Button */}
               <Button
                 type="submit"

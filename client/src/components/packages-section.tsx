@@ -14,7 +14,7 @@ const packages: Package[] = [
   {
     id: "smart-shot",
     name: "SMART SHOT",
-    price: 1200,
+    price: 1499,
     features: [
       { icon: Video, text: "1 Reel" },
       { icon: Clock, text: "Up to 1.5-hour shoot" },
@@ -25,7 +25,7 @@ const packages: Package[] = [
   {
     id: "xpress-pro",
     name: "XPRESS PRO",
-    price: 2199,
+    price: 2499,
     popular: true,
     features: [
       { icon: Video, text: "2 Reels" },
@@ -37,7 +37,7 @@ const packages: Package[] = [
   {
     id: "xpress-PRO+",
     name: "XPRESS PRO+",
-    price: 3499,
+    price: 3999,
     popular: true,
     features: [
       { icon: Video, text: "3 Reels" },
@@ -49,7 +49,7 @@ const packages: Package[] = [
   {
     id: "xpress-max",
     name: "XPRESS MAX",
-    price: 4799,
+    price: 4999,
     features: [
       { icon: Video, text: "4 Reels" },
       { icon: Clock, text: "4.5 hours shoot" },
@@ -141,11 +141,11 @@ export default function PackagesSection() {
               <div className="space-y-3">
                 <div className="flex justify-between items-center" data-testid="addon-video">
                   <span>ADD on:- Per video</span>
-                  <span className="font-bold">₹550/-</span>
+                  <span className="font-bold">₹700/-</span>
                 </div>
                 <div className="flex justify-between items-center" data-testid="addon-hour">
                   <span>Extra Hour</span>
-                  <span className="font-bold">₹400/- Per Hour</span>
+                  <span className="font-bold">₹900/- Per Hour</span>
                 </div>
               </div>
             </CardContent>
@@ -160,7 +160,7 @@ export default function PackagesSection() {
                 <div>• Candid Traditional photos</div>
                 <div>• Full Event Coverage</div>
                 <div className="text-center bg-foreground text-white py-2 rounded-lg font-bold" data-testid="photos-price">
-                  ₹500/-
+                  ₹1000/-
                 </div>
               </div>
             </CardContent>
