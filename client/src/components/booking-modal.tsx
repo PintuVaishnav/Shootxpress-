@@ -156,23 +156,23 @@ export default function BookingModal() {
     });
   };
   const handleUPIPayment = () => {
-  const upiId = "sanvithbunny@ybl"; // 🔹 Replace with your UPI ID
-  const amount = formData.advanceAmount || "100";
-  const name = `${formData.firstName} ${formData.lastName}`;
-  const note = `Advance payment for ${formData.packageType} by ${name}`;
+    const upiId = "sanvithbunny@ybl"; // 🔹 Replace with your UPI ID
+    const amount = formData.advanceAmount || "100";
+    const name = `${formData.firstName} ${formData.lastName}`;
+    const note = `Advance payment for ${formData.packageType} by ${name}`;
 
-  const upiLink = `upi://pay?pa=${upiId}&pn=ShootXPress&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;
+    const upiLink = `upi://pay?pa=${upiId}&pn=ShootXPress&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;
 
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-  if (isMobile) {
-    // 🔹 Opens directly in UPI app (Google Pay / PhonePe / Paytm)
-    window.location.href = upiLink;
-  } else {
-    // 🔹 Desktop fallback: Show QR + UPI ID
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiLink)}`;
-    const qrPopup = window.open("", "QR", "width=320,height=420");
-    qrPopup?.document.write(`
+    if (isMobile) {
+      // 🔹 Opens directly in UPI app (Google Pay / PhonePe / Paytm)
+      window.location.href = upiLink;
+    } else {
+      // 🔹 Desktop fallback: Show QR + UPI ID
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiLink)}`;
+      const qrPopup = window.open("", "QR", "width=320,height=420");
+      qrPopup?.document.write(`
       <div style="text-align:center;font-family:sans-serif;padding:15px;">
         <h3>Scan to Pay via UPI</h3>
         <img src="${qrUrl}" style="width:220px;height:220px;margin:10px 0;"/>
@@ -182,20 +182,20 @@ export default function BookingModal() {
         <p style="font-size:18px;font-weight:bold;color:#333;">${upiId}</p>
       </div>
     `);
-  }
-
-  // 🔹 Confirm after a few seconds
-  setTimeout(() => {
-    const confirmed = window.confirm("Did you complete the payment?");
-    if (confirmed) handlePaymentSuccess();
-    else {
-      toast({
-        title: "Payment Pending ⚠️",
-        description: "Please complete the UPI payment to confirm your booking.",
-      });
     }
-  }, 4000);
-};
+
+    // 🔹 Confirm after a few seconds
+    setTimeout(() => {
+      const confirmed = window.confirm("Did you complete the payment?");
+      if (confirmed) handlePaymentSuccess();
+      else {
+        toast({
+          title: "Payment Pending ⚠️",
+          description: "Please complete the UPI payment to confirm your booking.",
+        });
+      }
+    }, 4000);
+  };
 
 
   const handlePaymentSuccess = () => {
@@ -203,9 +203,59 @@ export default function BookingModal() {
       title: "Payment Successful! 🎉",
       description: "Your booking has been confirmed. You'll receive a confirmation email shortly.",
     });
+
+    // 🔹 Send confirmation email to client
+
+    emailjs
+      .send(
+        import.meta.env.VITE_EMAIL_SERVICE_ID,
+        import.meta.env.VITE_EMAIL_TEMPLATE_ID,
+        {
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          package: formData.packageType,
+          amount: formData.advanceAmount,
+          phone: formData.phone,
+          eventDate: formData.eventDate,
+          eventTime: formData.eventTime,
+          eventType: formData.eventType,
+          eventLocation: formData.eventLocation,
+          addOns: formData.addOns.join(", ") || "None",
+          specialRequirements: formData.specialRequirements || "None",
+          totalAmount: formData.totalAmount,
+        },
+        import.meta.env.VITE_EMAIL_PUBLIC_KEY
+      )
+      .then(() => {
+        console.log("✅ Confirmation email sent to client successfully!");
+      })
+      .catch((error) => {
+        console.error("❌ Failed to send email:", error);
+      });
+
+    // 🔹 (Optional) Send copy to owner (you can remove if your template already handles it)
+    emailjs.send(
+      import.meta.env.VITE_EMAIL_SERVICE_ID,
+      import.meta.env.VITE_EMAIL_TEMPLATE_ID,
+      {
+        name: "Shoot X Press Admin",
+        email: "shootxpress27@gmail.com", // replace with your owner mail
+        package: formData.packageType,
+        amount: formData.advanceAmount,
+      },
+      import.meta.env.VITE_EMAIL_PUBLIC_KEY
+    )
+      .then(() => {
+        console.log("📩 Copy email sent to owner successfully!");
+      })
+      .catch((error) => {
+        console.error("❌ Failed to send owner email:", error);
+      });
+
     closeModal();
     resetForm();
   };
+
 
   const handlePaymentCancel = () => {
     setShowPaymentQR(false);
@@ -526,6 +576,7 @@ export default function BookingModal() {
                 <CreditCard className="mr-2 h-5 w-5" />
                 {createBooking.isPending ? "Processing..." : "Pay Advance & Book"}
               </Button>
+
             </form>
           </div>
         </div>
