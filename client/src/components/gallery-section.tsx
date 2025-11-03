@@ -113,7 +113,7 @@ export default function GallerySection() {
         )}
 
         <div className="text-center mt-12">
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-lg font-bold transition-colors duration-200">
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-lg font-bold transition-colors duration-200" onClick={() => window.open('https://www.instagram.com/shootxpress_/', '_blank')}>
             View Full Portfolio
           </Button>
         </div>

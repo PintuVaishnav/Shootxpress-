@@ -136,7 +136,7 @@ export default function ContactSection() {
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
-                    placeholder="+91 98181 86301"
+                    placeholder="+91 81868 31230"
                     data-testid="input-phone"
                   />
                 </div>

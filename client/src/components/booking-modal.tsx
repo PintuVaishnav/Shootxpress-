@@ -29,15 +29,16 @@ interface BookingData {
 }
 
 const packagePrices = {
-  'smart-shot': 999,
-  'xpress-pro': 1799,
-  'xpress-max': 2999,
+  'smart-shot': 1200,
+  'xpress-pro': 2199,
+  'xpress-pro+': 3499,
+  'xpress-max': 4799,
 };
 
 const addOnPrices = {
-  'extra-video': 550,
+  'extra-video': 600,
   'traditional-photos': 500,
-  'extra-hour': 400,
+  'extra-hour': 800,
 };
 
 export default function BookingModal() {
@@ -148,8 +149,8 @@ export default function BookingModal() {
       packageType: 'smart-shot',
       addOns: [],
       specialRequirements: "",
-      totalAmount: 999,
-      advanceAmount: 500,
+      totalAmount: 1200,
+      advanceAmount: 600,
       termsAccepted: false,
     });
   };
@@ -252,9 +253,10 @@ export default function BookingModal() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="smart-shot">Smart Shot - ₹999</SelectItem>
-                    <SelectItem value="xpress-pro">Xpress Pro - ₹1799</SelectItem>
-                    <SelectItem value="xpress-max">Xpress Max - ₹2999</SelectItem>
+                    <SelectItem value="smart-shot">Smart Shot - ₹1200</SelectItem>
+                    <SelectItem value="xpress-pro">Xpress Pro - ₹2199</SelectItem>
+                    <SelectItem value="xpress-pro">Xpress Pro+ - ₹3499</SelectItem>
+                    <SelectItem value="xpress-max">Xpress Max - ₹4799</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -373,7 +375,7 @@ export default function BookingModal() {
                       onCheckedChange={(checked) => handleAddOnChange('extra-video', checked as boolean)}
                       data-testid="addon-extra-video"
                     />
-                    <Label htmlFor="extra-video">Extra Video (+₹550)</Label>
+                    <Label htmlFor="extra-video">Extra Video (+₹600)</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox
@@ -391,7 +393,7 @@ export default function BookingModal() {
                       onCheckedChange={(checked) => handleAddOnChange('extra-hour', checked as boolean)}
                       data-testid="addon-extra-hour"
                     />
-                    <Label htmlFor="extra-hour">Extra Hour (+₹400/hour)</Label>
+                    <Label htmlFor="extra-hour">Extra Hour (+₹800/hour)</Label>
                   </div>
                 </div>
               </div>

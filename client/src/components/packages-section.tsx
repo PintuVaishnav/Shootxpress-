@@ -14,7 +14,7 @@ const packages: Package[] = [
   {
     id: "smart-shot",
     name: "SMART SHOT",
-    price: 999,
+    price: 1200,
     features: [
       { icon: Video, text: "1 Reel" },
       { icon: Clock, text: "Up to 1.5-hour shoot" },
@@ -25,7 +25,7 @@ const packages: Package[] = [
   {
     id: "xpress-pro",
     name: "XPRESS PRO",
-    price: 1799,
+    price: 2199,
     popular: true,
     features: [
       { icon: Video, text: "2 Reels" },
@@ -35,16 +35,29 @@ const packages: Package[] = [
     ],
   },
   {
-    id: "xpress-max",
-    name: "XPRESS MAX",
-    price: 2999,
+    id: "xpress-PRO+",
+    name: "XPRESS PRO+",
+    price: 3499,
+    popular: true,
     features: [
-      { icon: Video, text: "4 Reels" },
-      { icon: Clock, text: "6 hours shoot" },
+      { icon: Video, text: "3 Reels" },
+      { icon: Clock, text: "Up to 3.5-hours shoot" },
       { icon: Rocket, text: "Fast same-day delivery" },
       { icon: Camera, text: "11-15 Candid Photos" },
     ],
   },
+  {
+    id: "xpress-max",
+    name: "XPRESS MAX",
+    price: 4799,
+    features: [
+      { icon: Video, text: "4 Reels" },
+      { icon: Clock, text: "4.5 hours shoot" },
+      { icon: Rocket, text: "Fast same-day delivery" },
+      { icon: Camera, text: "20-25 Candid Photos" },
+    ],
+  },
+
 ];
 
 export default function PackagesSection() {
@@ -64,14 +77,13 @@ export default function PackagesSection() {
             Professional photography and videography packages designed for every need and budget
           </p>
         </div>
-        
+
         <div className="grid md:grid-cols-3 gap-8 mb-12">
           {packages.map((pkg) => (
-            <Card 
+            <Card
               key={pkg.id}
-              className={`package-card relative ${
-                pkg.popular ? 'border-2 border-primary' : 'border border-border'
-              }`}
+              className={`package-card relative ${pkg.popular ? 'border-2 border-primary' : 'border border-border'
+                }`}
               data-testid={`package-card-${pkg.id}`}
             >
               {pkg.popular && (
@@ -82,12 +94,12 @@ export default function PackagesSection() {
                   </span>
                 </div>
               )}
-              
+
               <CardContent className="p-8">
                 <div className="bg-primary text-primary-foreground text-center py-3 rounded-lg mb-6">
                   <h3 className="text-xl font-black">{pkg.name}</h3>
                 </div>
-                
+
                 <div className="space-y-4 mb-8">
                   {pkg.features.map((feature, index) => (
                     <div key={index} className="flex items-center" data-testid={`feature-${pkg.id}-${index}`}>
@@ -96,18 +108,17 @@ export default function PackagesSection() {
                     </div>
                   ))}
                 </div>
-                
+
                 <div className="text-center">
                   <div className="text-3xl font-black text-foreground mb-4" data-testid={`price-${pkg.id}`}>
                     ₹{pkg.price}/-
                   </div>
-                  <Button 
+                  <Button
                     onClick={() => selectPackage(pkg.id)}
-                    className={`w-full py-3 rounded-lg font-bold transition-colors duration-200 ${
-                      pkg.popular 
+                    className={`w-full py-3 rounded-lg font-bold transition-colors duration-200 ${pkg.popular
                         ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
                         : 'bg-foreground hover:bg-foreground/90 text-white'
-                    }`}
+                      }`}
                     data-testid={`select-package-${pkg.id}`}
                   >
                     Choose Package
@@ -115,11 +126,13 @@ export default function PackagesSection() {
                 </div>
               </CardContent>
             </Card>
+
           ))}
         </div>
-        
+
         {/* Add-ons */}
         <div className="grid md:grid-cols-2 gap-8">
+
           <Card className="border border-border">
             <CardContent className="p-6">
               <div className="bg-primary text-primary-foreground text-center py-2 rounded-lg mb-4">
@@ -137,7 +150,7 @@ export default function PackagesSection() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="border border-border">
             <CardContent className="p-6">
               <div className="bg-primary text-primary-foreground text-center py-2 rounded-lg mb-4">
@@ -148,6 +161,24 @@ export default function PackagesSection() {
                 <div>• Full Event Coverage</div>
                 <div className="text-center bg-foreground text-white py-2 rounded-lg font-bold" data-testid="photos-price">
                   ₹500/-
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border border-border">
+            <CardContent className="p-6">
+              <div className="bg-primary text-primary-foreground text-center py-2 rounded-lg mb-4">
+                <h4 className="font-black">MUST KNOW</h4>
+              </div>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center" data-testid="addon-video">
+                  <span>we also cover
+                    complete events
+                    with
+                    professional
+                    photography
+                    and
+                    videography.</span>
                 </div>
               </div>
             </CardContent>
