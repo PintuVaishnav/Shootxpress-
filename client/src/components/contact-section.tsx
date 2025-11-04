@@ -77,13 +77,21 @@ export default function ContactSection() {
 
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Contact Image Section */}
-          <div className="w-full">
-            <img
-              src="https://cdn.pixabay.com/photo/2025/09/24/10/41/autumn-9852400_1280.png" 
-              alt="Contact Us"
-              className="w-full h-auto object-cover rounded-2xl shadow-md"
-            />
-          </div>
+        <div className="w-full max-w-xl mx-auto rounded-2xl overflow-hidden shadow-lg bg-white">
+  <img
+    src="https://raw.githubusercontent.com/PintuVaishanv/post-images/refs/heads/main/WhatsApp%20Image%202025-11-04%20at%2014.37.42_296146a8.jpg"
+    alt="Vaishnav Yejju - Founder of ShootXpress"
+    className="w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
+  />
+  <div className="p-6 text-center">
+    <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">SHOOT<span className="text-primary">X</span>PRESS</h2>
+    <p className="text-2xl font-bold text-gray-600 uppercase tracking-wide mt-3">Founder & Ceo</p>
+    <p className="text-2xl font-bold text-gray-600 uppercase tracking-wide ">Somasami Sanvith</p>
+  </div>
+</div>
+
+
+
 
 
           {/* Contact Information */}

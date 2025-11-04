@@ -30,16 +30,16 @@ interface BookingData {
 }
 
 const packagePrices = {
-  'smart-shot': 1200,
-  'xpress-pro': 2199,
-  'xpress-pro+': 3499,
-  'xpress-max': 4799,
+  'smart-shot': 1499,
+  'xpress-pro': 2499,
+  'xpress-pro+': 3999,
+  'xpress-max': 4999,
 };
 
 const addOnPrices = {
-  'extra-video': 600,
-  'traditional-photos': 500,
-  'extra-hour': 800,
+  'extra-video': 700,
+  'traditional-photos': 1000,
+  'extra-hour': 900,
 };
 
 export default function BookingModal() {
@@ -59,8 +59,8 @@ export default function BookingModal() {
     packageType: 'smart-shot',
     addOns: [],
     specialRequirements: "",
-    totalAmount: 999,
-    advanceAmount: 500,
+    totalAmount: 1499,
+    advanceAmount: 750,
     termsAccepted: false,
   });
 
@@ -185,52 +185,16 @@ export default function BookingModal() {
     }
 
     // 🔹 Confirm after a few seconds
+    // 🔹 Confirm after payment attempt
     setTimeout(() => {
       const confirmed = window.confirm("Did you complete the payment?");
-      if (confirmed) {
-        handlePaymentSuccess();
-
-        // ✅ Show screenshot options after success
-        toast({
-          title: "Payment Successful 🎉",
-          description: (
-            <div className="space-y-3">
-              <p>Great! Please send your payment screenshot to confirm your booking.</p>
-              <div className="flex gap-3 flex-wrap">
-                <a
-                  href="mailto:shootxpress27@gmail.com?subject=Payment Screenshot for Booking"
-                  className="bg-primary text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition"
-                >
-                  📧 Email
-                </a>
-                <a
-                  href="https://wa.me/918186831230?text=Hi! I’ve completed the payment. Here’s my screenshot:"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition"
-                >
-                  💬 WhatsApp
-                </a>
-                <a
-                  href="https://www.instagram.com/shootxpress"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-pink-500 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-pink-600 transition"
-                >
-                  📸 Instagram
-                </a>
-              </div>
-            </div>
-          ),
-          duration: 8000,
-        });
-      } else {
+      if (!confirmed) {
         toast({
           title: "Payment Pending ⚠️",
           description: (
             <div className="space-y-3">
-              <p>Please complete the UPI payment to confirm your booking.</p>
-              <p className="font-semibold">Send your payment screenshot via:</p>
+              <p>Please complete your UPI payment to confirm your booking.</p>
+              <p className="font-semibold">You can send your payment screenshot via:</p>
               <div className="flex gap-3 flex-wrap">
                 <a
                   href="mailto:shootxpress27@gmail.com"
@@ -257,9 +221,51 @@ export default function BookingModal() {
               </div>
             </div>
           ),
-          duration: 7000,
+          duration: Infinity,
         });
+        return;
       }
+
+      // ✅ If confirmed (Yes)
+      handlePaymentSuccess();
+
+      // Persistent toast until user clicks any link
+      toast({
+        title: "Payment Successful 🎉",
+        description: (
+          <div className="space-y-3">
+            <p>Awesome! Please send your payment screenshot to confirm your booking.</p>
+            <div className="flex gap-3 flex-wrap">
+              <a
+                href="mailto:shootxpress27@gmail.com?subject=Payment Screenshot for Booking"
+                onClick={() => toast.dismiss()} // closes toast when clicked
+                className="bg-primary text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition"
+              >
+                📧 Email
+              </a>
+              <a
+                href="https://wa.me/918186831230?text=Hi! I’ve completed the payment. Here’s my screenshot:"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => toast.dismiss()}
+                className="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition"
+              >
+                💬 WhatsApp
+              </a>
+              <a
+                href="https://www.instagram.com/shootxpress"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => toast.dismiss()}
+                className="bg-pink-500 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-pink-600 transition"
+              >
+                📸 Instagram
+              </a>
+            </div>
+          </div>
+        ),
+        duration: Infinity, // stays until user clicks
+      });
     }, Math.floor(Math.random() * 5000) + 10000);
 
 
@@ -418,7 +424,7 @@ export default function BookingModal() {
                   <SelectContent>
                     <SelectItem value="smart-shot">Smart Shot - ₹1499</SelectItem>
                     <SelectItem value="xpress-pro">Xpress Pro - ₹2499</SelectItem>
-                    <SelectItem value="xpress-pro">Xpress Pro+ - ₹3999</SelectItem>
+                    <SelectItem value="xpress-pro+">Xpress Pro+ - ₹3999</SelectItem>
                     <SelectItem value="xpress-max">Xpress Max - ₹4999</SelectItem>
                   </SelectContent>
                 </Select>
@@ -562,7 +568,7 @@ export default function BookingModal() {
               </div>
 
               <div>
-                <Label className="block text-sm font-medium text-foreground mb-2">Special Requirements</Label>
+                <Label className="block text-sm font-medium text-foreground mb-2">Special Requirements & Song Suggestion</Label>
                 <Textarea
                   value={formData.specialRequirements}
                   onChange={(e) => handleInputChange('specialRequirements', e.target.value)}
