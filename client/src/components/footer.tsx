@@ -29,7 +29,7 @@ export default function Footer() {
                 <MessageSquare className="h-6 w-6" />
               </a>
               <a
-                href="https://www.youtube.com/@SANVITHVLOGS/featured"
+                href="https://youtube.com/@shootxpress27?si=r0sot-1Neryb6M77"
                 className="text-gray-300 hover:text-primary transition-colors"
                 data-testid="footer-youtube"
               >

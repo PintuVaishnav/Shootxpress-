@@ -74,124 +74,24 @@ export default function ContactSection() {
             Ready to capture your special moments? Contact us today to discuss your project
           </p>
         </div>
-        
+
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Form */}
-          <Card className="border border-border">
-            <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-foreground mb-6">Send us a message</h3>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="firstName" className="block text-sm font-medium text-foreground mb-2">
-                      First Name
-                    </Label>
-                    <Input
-                      id="firstName"
-                      type="text"
-                      value={formData.firstName}
-                      onChange={(e) => handleInputChange('firstName', e.target.value)}
-                      placeholder="John"
-                      required
-                      data-testid="input-first-name"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="lastName" className="block text-sm font-medium text-foreground mb-2">
-                      Last Name
-                    </Label>
-                    <Input
-                      id="lastName"
-                      type="text"
-                      value={formData.lastName}
-                      onChange={(e) => handleInputChange('lastName', e.target.value)}
-                      placeholder="Doe"
-                      required
-                      data-testid="input-last-name"
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <Label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange('email', e.target.value)}
-                    placeholder="john@example.com"
-                    required
-                    data-testid="input-email"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2">
-                    Phone
-                  </Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => handleInputChange('phone', e.target.value)}
-                    placeholder="+91 81868 31230"
-                    data-testid="input-phone"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="eventType" className="block text-sm font-medium text-foreground mb-2">
-                    Event Type
-                  </Label>
-                  <Select value={formData.eventType} onValueChange={(value) => handleInputChange('eventType', value)}>
-                    <SelectTrigger data-testid="select-event-type">
-                      <SelectValue placeholder="Select event type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="wedding">Wedding</SelectItem>
-                      <SelectItem value="corporate">Corporate Event</SelectItem>
-                      <SelectItem value="portrait">Portrait Session</SelectItem>
-                      <SelectItem value="birthday">Birthday Party</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
-                    Message
-                  </Label>
-                  <Textarea
-                    id="message"
-                    value={formData.message}
-                    onChange={(e) => handleInputChange('message', e.target.value)}
-                    placeholder="Tell us about your event..."
-                    rows={4}
-                    required
-                    data-testid="textarea-message"
-                  />
-                </div>
-                
-                <Button 
-                  type="submit"
-                  disabled={submitContact.isPending}
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3 rounded-lg font-bold transition-colors duration-200"
-                  data-testid="submit-contact-button"
-                >
-                  {submitContact.isPending ? "Sending..." : "Send Message"}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-          
+          {/* Contact Image Section */}
+          <div className="w-full">
+            <img
+              src="https://cdn.pixabay.com/photo/2025/09/24/10/41/autumn-9852400_1280.png" 
+              alt="Contact Us"
+              className="w-full h-auto object-cover rounded-2xl shadow-md"
+            />
+          </div>
+
+
           {/* Contact Information */}
           <div className="space-y-8">
             <Card className="border border-border">
               <CardContent className="p-8">
                 <h3 className="text-2xl font-bold text-foreground mb-6">Contact Information</h3>
-                
+
                 <div className="space-y-6">
                   <div className="flex items-center" data-testid="contact-phone">
                     <div className="bg-primary text-primary-foreground rounded-full p-3 mr-4">
@@ -202,7 +102,7 @@ export default function ContactSection() {
                       <div className="text-muted-foreground">+91 81868 31230</div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center" data-testid="contact-email">
                     <div className="bg-primary text-primary-foreground rounded-full p-3 mr-4">
                       <Mail className="h-6 w-6" />
@@ -212,7 +112,7 @@ export default function ContactSection() {
                       <div className="text-muted-foreground">shootxpress27@gmail.com</div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center" data-testid="contact-location">
                     <div className="bg-primary text-primary-foreground rounded-full p-3 mr-4">
                       <MapPin className="h-6 w-6" />
@@ -225,7 +125,7 @@ export default function ContactSection() {
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* Social Media Links */}
             <Card className="border border-border">
               <CardContent className="p-8">
@@ -255,7 +155,7 @@ export default function ContactSection() {
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* QR Code for Easy Contact */}
             <Card className="border border-border">
               <CardContent className="p-8 text-center">

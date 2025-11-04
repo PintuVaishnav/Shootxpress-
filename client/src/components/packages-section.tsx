@@ -116,8 +116,8 @@ export default function PackagesSection() {
                   <Button
                     onClick={() => selectPackage(pkg.id)}
                     className={`w-full py-3 rounded-lg font-bold transition-colors duration-200 ${pkg.popular
-                        ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
-                        : 'bg-foreground hover:bg-foreground/90 text-white'
+                      ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                      : 'bg-foreground hover:bg-foreground/90 text-white'
                       }`}
                     data-testid={`select-package-${pkg.id}`}
                   >
@@ -128,6 +128,36 @@ export default function PackagesSection() {
             </Card>
 
           ))}
+          <Card className="border border-border">
+            <CardContent className="p-6">
+              <div className="bg-primary text-primary-foreground text-center py-2 rounded-lg mb-4">
+                <h4 className="font-black text-xl">WEDDING PACKAGES</h4>
+              </div>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center" data-testid="addon-video">
+                  <span>We capture your entire wedding with our exclusive photo & video packages.</span>
+                </div>
+                <div className="space-y-3">
+                   <span> 💌 For package details, get in touch with us today!</span>
+                  <div className="text-center items-center text-xl font-black " data-testid="addon-video">
+                    <span>Contact</span>
+                  </div>
+                  <div className="flex justify-between items-center" data-testid="addon-hour">
+                    <span className="font-bold">Instagram</span>
+                    <span >@shootxpress_</span>
+                  </div>
+                  <div className="flex justify-between items-center" data-testid="addon-hour">
+                    <span className="font-bold">whatsapp</span>
+                    <span >+91 81868 31230</span>
+                  </div>
+                  <div className="flex justify-between items-center" data-testid="addon-hour">
+                    <span className="font-bold">Mail</span>
+                    <span >shootxpress27@gmail.com</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Add-ons */}
