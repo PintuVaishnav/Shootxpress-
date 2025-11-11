@@ -19,7 +19,7 @@ const packages: Package[] = [
       { icon: Video, text: "1 Reel" },
       { icon: Clock, text: "Up to 1.5-hour shoot" },
       { icon: Edit, text: "30-45 min editing" },
-      { icon: Camera, text: "3-5 Candid Photos" },
+      { icon: Camera, text: "No Raw Data" },
     ],
   },
   {
@@ -31,7 +31,7 @@ const packages: Package[] = [
       { icon: Video, text: "2 Reels" },
       { icon: Clock, text: "Up to 3-hours shoot" },
       { icon: Rocket, text: "Fast same-day delivery" },
-      { icon: Camera, text: "7-10 Candid Photos" },
+      { icon: Camera, text: "No Raw Data" },
     ],
   },
   {
@@ -43,7 +43,7 @@ const packages: Package[] = [
       { icon: Video, text: "3 Reels" },
       { icon: Clock, text: "Up to 3.5-hours shoot" },
       { icon: Rocket, text: "Fast same-day delivery" },
-      { icon: Camera, text: "11-15 Candid Photos" },
+      { icon: Camera, text: "No Raw Data" },
     ],
   },
   {
@@ -54,7 +54,7 @@ const packages: Package[] = [
       { icon: Video, text: "4 Reels" },
       { icon: Clock, text: "4.5 hours shoot" },
       { icon: Rocket, text: "Fast same-day delivery" },
-      { icon: Camera, text: "20-25 Candid Photos" },
+      { icon: Camera, text: "No Raw Data" },
     ],
   },
 

@@ -253,7 +253,7 @@ export default function BookingModal() {
                 💬 WhatsApp
               </a>
               <a
-                href="https://www.instagram.com/shootxpress"
+                href="https://www.instagram.com/shootxpress_/"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => toast.dismiss()}
