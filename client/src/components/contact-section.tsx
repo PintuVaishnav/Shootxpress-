@@ -138,7 +138,7 @@ export default function ContactSection() {
                     </div>
                     <div>
                       <div className="font-semibold text-foreground">Phone</div>
-                      <div className="text-muted-foreground">+91 81868 31230</div>
+                      <div className="text-muted-foreground">+91 7416365923</div>
                     </div>
                   </div>
 

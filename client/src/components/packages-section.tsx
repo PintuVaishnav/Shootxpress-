@@ -148,7 +148,7 @@ export default function PackagesSection() {
                   </div>
                   <div className="flex justify-between items-center" data-testid="addon-hour">
                     <span className="font-bold">whatsapp</span>
-                    <span >+91 81868 31230</span>
+                    <span >+91 7416365923</span>
                   </div>
                   <div className="flex justify-between items-center" data-testid="addon-hour">
                     <span className="font-bold">Mail</span>
