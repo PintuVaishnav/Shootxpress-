@@ -1,11 +1,6 @@
 import { useState } from "react";
-import { Phone, Mail, MapPin, Instagram, MessageSquare, Youtube, QrCode } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Phone, Mail, MapPin, Instagram, MessageSquare, Youtube } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 
@@ -19,16 +14,32 @@ export default function ContactSection() {
     message: "",
   });
 
+  const [first, setFirst] = useState(true); 
+
+  const member1 = {
+    img: "https://raw.githubusercontent.com/PintuVaishanv/post-images/refs/heads/main/Untitled%20design.png",
+    name: "Somasani Sanvith",
+    role: "Founder & CEO",
+  };
+
+  const member2 = {
+    img: "https://github.com/PintuVaishanv/shootxpress/blob/main/Untitled%20design%20(1).png?raw=true",
+    name: "Yaswanth Kumar Kinthali",
+    role: "Managing Director",
+  };
+
+  const m = first ? member1 : member2;
+
   const { toast } = useToast();
 
   const submitContact = useMutation({
     mutationFn: async (data: typeof formData) => {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/contacts`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error('Failed to submit contact form');
+      if (!response.ok) throw new Error("Failed to submit contact form");
       return response.json();
     },
     onSuccess: () => {
@@ -59,10 +70,6 @@ export default function ContactSection() {
     submitContact.mutate(formData);
   };
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
   return (
     <section id="contact" className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -76,23 +83,47 @@ export default function ContactSection() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Image Section */}
-          <div className="w-full max-w-xl mx-auto rounded-2xl overflow-hidden shadow-lg bg-white">
+
+          {/* ---------- UPDATED IMAGE SECTION WITH MEMBER SWITCH ---------- */}
+          <div className="w-full max-w-xl mx-auto rounded-2xl overflow-hidden shadow-lg bg-white relative">
+
+            {/* Member Image */}
             <img
-              src="https://raw.githubusercontent.com/PintuVaishanv/post-images/refs/heads/main/Untitled%20design.png"
-              alt="Vaishnav Yejju - Founder of ShootXpress"
+              src={m.img}
+              alt={m.name}
               className="w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
             />
+
+            {/* Member Info */}
             <div className="p-6 text-center">
-              <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">SHOOT<span className="text-primary">X</span>PRESS</h2>
-              <p className="text-2xl font-bold text-gray-600 uppercase tracking-wide mt-3">Founder & Ceo</p>
-              <p className="text-2xl font-bold text-gray-600 uppercase tracking-wide ">Somasani Sanvith</p>
+              <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">
+                SHOOT<span className="text-primary">X</span>PRESS
+              </h2>
+              <p className="text-2xl font-bold text-gray-600 uppercase tracking-wide mt-3">
+                {m.role}
+              </p>
+              <p className="text-2xl font-bold text-gray-600 uppercase tracking-wide">
+                {m.name}
+              </p>
             </div>
+
+            {/* Left Arrow */}
+            <button
+              onClick={() => setFirst(!first)}
+              className="absolute left-3 top-1/2 -translate-y-1/2 bg-black text-white p-3 rounded-full shadow hover:bg-gray-800"
+            >
+              ‹
+            </button>
+
+            {/* Right Arrow */}
+            <button
+              onClick={() => setFirst(!first)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 bg-black text-white p-3 rounded-full shadow hover:bg-gray-800"
+            >
+              ›
+            </button>
           </div>
-
-
-
-
+          {/* ------------------------------------------------------------- */}
 
           {/* Contact Information */}
           <div className="space-y-8">
@@ -134,7 +165,7 @@ export default function ContactSection() {
               </CardContent>
             </Card>
 
-            {/* Social Media Links */}
+            {/* Social Media */}
             <Card className="border border-border">
               <CardContent className="p-8">
                 <h3 className="text-2xl font-bold text-foreground mb-6">Follow Us</h3>
@@ -164,16 +195,6 @@ export default function ContactSection() {
               </CardContent>
             </Card>
 
-            {/* QR Code for Easy Contact */}
-            <Card className="border border-border">
-              <CardContent className="p-8 text-center">
-                <h3 className="text-xl font-bold text-foreground mb-4">Scan to Connect</h3>
-                <div className="w-32 h-32 bg-secondary rounded-lg mx-auto flex items-center justify-center mb-4">
-                  <img src="https://raw.githubusercontent.com/PintuVaishanv/post-images/refs/heads/main/WhatsApp%20Image%202025-11-11%20at%2015.18.01_6df23c0f.jpg" alt="QR Code" width={96} height={96} />
-                </div>
-                <p className="text-sm text-muted-foreground">Scan with your camera to visit our Instagram</p>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
