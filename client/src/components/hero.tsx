@@ -16,11 +16,7 @@ export default function Hero() {
 
   return (
     <section className="hero-bg min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Film strip decoration */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-10">
-        <div className="absolute top-10 left-10 w-32 h-6 bg-primary transform -rotate-12"></div>
-        <div className="absolute bottom-20 right-16 w-40 h-8 bg-primary transform rotate-45"></div>
-      </div>
+    
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <div className="animate-fade-in">

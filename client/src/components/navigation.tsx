@@ -34,18 +34,24 @@ export default function Navigation() {
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'nav-sticky border-b border-border' : 'bg-white/95 backdrop-blur-md border-b border-border'
-    }`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'nav-sticky border-b border-border' : 'bg-white/95 backdrop-blur-md border-b border-border'
+      }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0" onClick={closeMenu}>
             <div className="text-2xl font-black text-foreground">
-              SHOOT<span className="text-primary">X</span>PRESS
+              <img
+                src="https://github.com/PintuVaishanv/shootxpress/blob/main/IMG_7687.PNG?raw=true"
+                alt="logo"
+                style={{
+                  width: '180px',
+                  height: '180px',
+                }}
+              />
             </div>
           </Link>
-          
+
           {/* Desktop Navigation */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
@@ -53,17 +59,16 @@ export default function Navigation() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`transition-colors duration-200 font-medium ${
-                    location === link.href 
-                      ? 'text-primary' 
+                  className={`transition-colors duration-200 font-medium ${location === link.href
+                      ? 'text-primary'
                       : 'text-foreground hover:text-primary'
-                  }`}
+                    }`}
                   data-testid={`nav-link-${link.label.toLowerCase()}`}
                 >
                   {link.label}
                 </Link>
               ))}
-              <Button 
+              <Button
                 onClick={openBookingModal}
                 className="btn-primary px-6 py-2 rounded-lg"
                 data-testid="nav-book-now-button"
@@ -72,7 +77,7 @@ export default function Navigation() {
               </Button>
             </div>
           </div>
-          
+
           {/* Mobile menu button */}
           <div className="md:hidden">
             <Button
@@ -87,7 +92,7 @@ export default function Navigation() {
           </div>
         </div>
       </div>
-      
+
       {/* Mobile Navigation */}
       {isOpen && (
         <div className="md:hidden bg-white border-t border-border" data-testid="mobile-menu">
@@ -97,11 +102,10 @@ export default function Navigation() {
                 key={link.href}
                 href={link.href}
                 onClick={closeMenu}
-                className={`block px-3 py-2 transition-colors ${
-                  location === link.href 
-                    ? 'text-primary' 
+                className={`block px-3 py-2 transition-colors ${location === link.href
+                    ? 'text-primary'
                     : 'text-foreground hover:text-primary'
-                }`}
+                  }`}
                 data-testid={`mobile-nav-link-${link.label.toLowerCase()}`}
               >
                 {link.label}
