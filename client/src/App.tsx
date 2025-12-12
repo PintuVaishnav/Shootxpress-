@@ -12,6 +12,7 @@ import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import BookingModal from "@/components/booking-modal";
 import TermsModal from "@/components/terms-modal";
+import BecomeMemberModal from "./components/becomemember-modal";
 
 function Router() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Footer />
         </div>
         <BookingModal />
+        <BecomeMemberModal />
         <TermsModal />
         <Toaster />
       </TooltipProvider>

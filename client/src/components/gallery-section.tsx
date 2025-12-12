@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Play, Eye, Expand } from "lucide-react";
+import { Play, Expand, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { Portfolio } from "@shared/schema";
@@ -9,11 +9,12 @@ const categories = ["All", "Events", "Portraits", "Reels"];
 
 export default function GallerySection() {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const { data: portfolio = [], isLoading } = useQuery<Portfolio[]>({
     queryKey: ['/portfolio', activeCategory === "All" ? undefined : activeCategory.toLowerCase()],
     queryFn: async () => {
-      const baseUrl = import.meta.env.VITE_API_URL; // use env variable
+      const baseUrl = import.meta.env.VITE_API_URL;
       const url = activeCategory === "All"
         ? `${baseUrl}/api/portfolio`
         : `${baseUrl}/api/portfolio?category=${encodeURIComponent(activeCategory)}`;
@@ -42,8 +43,8 @@ export default function GallerySection() {
               key={category}
               onClick={() => setActiveCategory(category)}
               className={`px-6 py-2 rounded-lg font-semibold transition-colors ${activeCategory === category
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground'
                 }`}
             >
               {category}
@@ -78,8 +79,8 @@ export default function GallerySection() {
                       onClick={() => {
                         if (item.isVideo && item.videoUrl) {
                           window.open(item.videoUrl, "_blank");
-                        } else {
-                          console.log("No video URL available");
+                        } else if (!item.isVideo) {
+                          setSelectedImage(item.imageUrl);
                         }
                       }}
                     >
@@ -118,6 +119,25 @@ export default function GallerySection() {
           </Button>
         </div>
       </div>
+
+      {/* Image Modal */}
+      {selectedImage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="relative bg-white rounded-lg max-w-3xl w-full p-4">
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-2 right-2 p-2 hover:bg-gray-200 rounded-full"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <img
+              src={selectedImage}
+              alt="Preview"
+              className="max-h-[80vh] w-full object-contain rounded"
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
