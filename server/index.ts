@@ -7,8 +7,8 @@ const app = express();
 // Define allowed origins explicitly
 const allowedOrigins = [
   "http://localhost:5173",             // local dev
-  "https://shootxpress.vercel.app"     // production frontend
-  // "https://www.yourcustomdomain.com" // add here if you map a domain later
+  "https://shootxpress.vercel.app",    // production frontend
+  "https://shootxpress.in" 
 ];
 
 app.use(
