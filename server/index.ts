@@ -4,17 +4,16 @@ import { registerRoutes } from "./routes";
 
 const app = express();
 
-// Define allowed origins explicitly
 const allowedOrigins = [
-  "http://localhost:5173",             // local dev
-  "https://shootxpress.vercel.app",    // production frontend
-  "https://shootxpress.in" 
+  "http://localhost:5173",
+  "https://shootxpress.vercel.app",
+  "https://shootxpress.in" ,
+  "https://www.shootxpress.in" 
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // allow mobile apps / curl / postman by skipping 'null'
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -28,7 +27,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Logging middleware…
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -56,7 +54,6 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  // Error handling middleware
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
