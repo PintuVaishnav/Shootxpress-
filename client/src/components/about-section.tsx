@@ -55,7 +55,7 @@ export default function AboutSection() {
               data-testid="about-image"
             />
             <div className="absolute -bottom-6 -left-6 bg-primary text-primary-foreground p-6 rounded-xl">
-              <div className="text-3xl font-black" data-testid="client-count">6000+</div>
+              <div className="text-3xl font-black" data-testid="client-count">6800+</div>
               <div className="text-sm">Strong Family</div>
             </div>
           </div>

@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Phone, Mail, MapPin, Instagram, MessageSquare, Youtube } from "lucide-react";
+import {
+  Phone,
+  Mail,
+  MapPin,
+  Instagram,
+  MessageSquare,
+  Youtube,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
@@ -14,31 +21,59 @@ export default function ContactSection() {
     message: "",
   });
 
-  const [first, setFirst] = useState(true); 
+  /* ---------------- MAIN FEATURED MEMBERS ---------------- */
+  const [featuredIndex, setFeaturedIndex] = useState(0);
 
-  const member1 = {
-    img: "https://raw.githubusercontent.com/PintuVaishanv/post-images/refs/heads/main/Untitled%20design.png",
-    name: "Somasani Sanvith",
-    role: "Founder & CEO",
-  };
+  const featuredMembers = [
+    {
+      img: "https://raw.githubusercontent.com/PintuVaishanv/post-images/refs/heads/main/Untitled%20design.png",
+      name: "Somasani Sanvith",
+      role: "Founder & CEO",
+    },
+    {
+      img: "https://github.com/PintuVaishanv/shootxpress/blob/main/Untitled%20design%20(1).png?raw=true",
+      name: "Yaswanth Kumar Kinthali",
+      role: "Managing Director",
+    },
+  ];
 
-  const member2 = {
-    img: "https://github.com/PintuVaishanv/shootxpress/blob/main/Untitled%20design%20(1).png?raw=true",
-    name: "Yaswanth Kumar Kinthali",
-    role: "Managing Director",
-  };
+  const featured = featuredMembers[featuredIndex];
 
-  const m = first ? member1 : member2;
+  /* ---------------- LEADERSHIP MEMBERS (DIFFERENT) ---------------- */
+  const [leaderIndex, setLeaderIndex] = useState(0);
+
+  const leaders = [
+    {
+      img: "https://raw.githubusercontent.com/PintuVaishanv/post-images/refs/heads/main/Untitled%20design.png",
+      name: "Rohit Sharma",
+      role: "Creative Director",
+    },
+    {
+      img: "https://raw.githubusercontent.com/PintuVaishanv/post-images/refs/heads/main/Untitled%20design.png",
+      name: "Ananya Reddy",
+      role: "Operations Head",
+    },
+    {
+      img: "https://raw.githubusercontent.com/PintuVaishanv/post-images/refs/heads/main/Untitled%20design.png",
+      name: "Karthik Varma",
+      role: "Technical Lead",
+    },
+  ];
+
+  const leader = leaders[leaderIndex];
 
   const { toast } = useToast();
 
   const submitContact = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/contacts`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/contacts`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }
+      );
       if (!response.ok) throw new Error("Failed to submit contact form");
       return response.json();
     },
@@ -73,127 +108,202 @@ export default function ContactSection() {
   return (
     <section id="contact" className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">
             GET IN <span className="text-primary">TOUCH</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Ready to capture your special moments? Contact us today to discuss your project
+            Ready to capture your special moments? Contact us today to discuss
+            your project
           </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-
-          {/* ---------- UPDATED IMAGE SECTION WITH MEMBER SWITCH ---------- */}
+          {/* LEFT COLUMN – MAIN FEATURED CARD */}
           <div className="w-full max-w-xl mx-auto rounded-2xl overflow-hidden shadow-lg bg-white relative">
-
-            {/* Member Image */}
             <img
-              src={m.img}
-              alt={m.name}
-              className="w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
+              src={featured.img}
+              alt={featured.name}
+              className="w-full object-cover"
             />
 
-            {/* Member Info */}
             <div className="p-6 text-center">
-              <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">
+              <h2 className="text-4xl font-extrabold text-gray-900">
                 SHOOT<span className="text-primary">X</span>PRESS
               </h2>
-              <p className="text-2xl font-bold text-gray-600 uppercase tracking-wide mt-3">
-                {m.role}
+              <p className="text-xl font-bold text-gray-600 mt-3">
+                {featured.role}
               </p>
-              <p className="text-2xl font-bold text-gray-600 uppercase tracking-wide">
-                {m.name}
+              <p className="text-xl font-bold text-gray-600">
+                {featured.name}
               </p>
             </div>
 
-            {/* Left Arrow */}
             <button
-              onClick={() => setFirst(!first)}
-              className="absolute left-3 top-1/2 -translate-y-1/2 bg-black text-white p-3 rounded-full shadow hover:bg-gray-800"
+              onClick={() =>
+                setFeaturedIndex(
+                  featuredIndex === 0
+                    ? featuredMembers.length - 1
+                    : featuredIndex - 1
+                )
+              }
+              className="absolute left-3 top-1/2 -translate-y-1/2 bg-black text-white p-3 rounded-full"
             >
               ‹
             </button>
 
-            {/* Right Arrow */}
             <button
-              onClick={() => setFirst(!first)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 bg-black text-white p-3 rounded-full shadow hover:bg-gray-800"
+              onClick={() =>
+                setFeaturedIndex(
+                  featuredIndex === featuredMembers.length - 1
+                    ? 0
+                    : featuredIndex + 1
+                )
+              }
+              className="absolute right-3 top-1/2 -translate-y-1/2 bg-black text-white p-3 rounded-full"
             >
               ›
             </button>
           </div>
-          {/* ------------------------------------------------------------- */}
 
-          {/* Contact Information */}
+          {/* RIGHT COLUMN */}
           <div className="space-y-8">
+            {/* Contact Information */}
             <Card className="border border-border">
               <CardContent className="p-8">
-                <h3 className="text-2xl font-bold text-foreground mb-6">Contact Information</h3>
+                <h3 className="text-2xl font-bold text-foreground mb-6">
+                  Contact Information
+                </h3>
 
                 <div className="space-y-6">
-                  <div className="flex items-center" data-testid="contact-phone">
+                  <div className="flex items-center">
                     <div className="bg-primary text-primary-foreground rounded-full p-3 mr-4">
                       <Phone className="h-6 w-6" />
                     </div>
                     <div>
-                      <div className="font-semibold text-foreground">Phone</div>
-                      <div className="text-muted-foreground">+91 7416365923</div>
+                      <div className="font-semibold text-foreground">
+                        Phone
+                      </div>
+                      <div className="text-muted-foreground">
+                        +91 7416365923
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center" data-testid="contact-email">
+                  <div className="flex items-center">
                     <div className="bg-primary text-primary-foreground rounded-full p-3 mr-4">
                       <Mail className="h-6 w-6" />
                     </div>
                     <div>
-                      <div className="font-semibold text-foreground">Email</div>
-                      <div className="text-muted-foreground">shootxpress27@gmail.com</div>
+                      <div className="font-semibold text-foreground">
+                        Email
+                      </div>
+                      <div className="text-muted-foreground">
+                        shootxpress27@gmail.com
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center" data-testid="contact-location">
+                  <div className="flex items-center">
                     <div className="bg-primary text-primary-foreground rounded-full p-3 mr-4">
                       <MapPin className="h-6 w-6" />
                     </div>
                     <div>
-                      <div className="font-semibold text-foreground">Location</div>
-                      <div className="text-muted-foreground">Hyderabad, India</div>
+                      <div className="font-semibold text-foreground">
+                        Location
+                      </div>
+                      <div className="text-muted-foreground">
+                        Hyderabad, India
+                      </div>
                     </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Social Media */}
+            {/* Follow Us */}
             <Card className="border border-border">
               <CardContent className="p-8">
-                <h3 className="text-2xl font-bold text-foreground mb-6">Follow Us</h3>
+                <h3 className="text-2xl font-bold text-foreground mb-6">
+                  Follow Us
+                </h3>
                 <div className="flex space-x-4">
                   <a
                     href="https://www.instagram.com/shootxpress_/"
-                    className="bg-primary text-primary-foreground rounded-full p-3 hover:bg-primary/90 transition-colors"
-                    data-testid="social-instagram"
+                    className="bg-primary text-primary-foreground rounded-full p-3"
                   >
                     <Instagram className="h-6 w-6" />
                   </a>
                   <a
                     href="https://www.instagram.com/junior_stylishstar__27/"
-                    className="bg-primary text-primary-foreground rounded-full p-3 hover:bg-primary/90 transition-colors"
-                    data-testid="social-whatsapp"
+                    className="bg-primary text-primary-foreground rounded-full p-3"
                   >
                     <MessageSquare className="h-6 w-6" />
                   </a>
                   <a
-                    href="https://youtube.com/@shootxpress27?si=r0sot-1Neryb6M77"
-                    className="bg-primary text-primary-foreground rounded-full p-3 hover:bg-primary/90 transition-colors"
-                    data-testid="social-youtube"
+                    href="https://youtube.com/@shootxpress27"
+                    className="bg-primary text-primary-foreground rounded-full p-3"
                   >
                     <Youtube className="h-6 w-6" />
                   </a>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Leadership Card */}
+<Card className="border border-border overflow-hidden relative">
+  <CardContent className="p-0">
+    <h3 className="text-2xl font-bold text-foreground text-center px-8 pt-8 pb-4">
+      Leadership Team
+    </h3>
+
+    <div className="flex h-56 px-6 pb-6 gap-4 relative">
+      {/* Image Section */}
+      <div className="w-1/2 h-full overflow-hidden rounded-xl relative left-8">
+        <img
+          src={leader.img}
+          alt={leader.name}
+          className="w-full h-full object-cover"
+        />
+      </div>
+
+      {/* Text Section – Centered */}
+      <div className="w-1/2 flex flex-col justify-center items-center text-center">
+        <div className="text-xl font-semibold text-foreground">
+          {leader.name}
+        </div>
+        <div className="text-muted-foreground text-base mt-2">
+          {leader.role}
+        </div>
+      </div>
+    </div>
+
+    {/* Left Arrow – positioned over the image */}
+    <button
+      onClick={() =>
+        setLeaderIndex(
+          leaderIndex === 0 ? leaders.length - 1 : leaderIndex - 1
+        )
+      }
+      className="absolute left-2 top-1/2 -translate-y-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full shadow"
+    >
+      ‹
+    </button>
+
+    {/* Right Arrow – still on the right */}
+    <button
+      onClick={() =>
+        setLeaderIndex(
+          leaderIndex === leaders.length - 1 ? 0 : leaderIndex + 1
+        )
+      }
+      className="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full shadow"
+    >
+      ›
+    </button>
+  </CardContent>
+</Card>
 
           </div>
         </div>
