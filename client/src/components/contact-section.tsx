@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Phone,
   Mail,
@@ -72,6 +72,20 @@ export default function ContactSection() {
 
   const leader = leaders[leaderIndex];
 
+ useEffect(() => {
+  // Preload featured images
+  featuredMembers.forEach((member) => {
+    const img = new Image();
+    img.src = member.img;
+  });
+
+  // Preload leadership images
+  leaders.forEach((member) => {
+    const img = new Image();
+    img.src = member.img;
+  });
+}, []);
+
   const { toast } = useToast();
 
   
@@ -94,10 +108,10 @@ export default function ContactSection() {
           {/* LEFT COLUMN – MAIN FEATURED CARD */}
           <div className="w-full max-w-xl mx-auto rounded-2xl overflow-hidden shadow-lg bg-white relative">
             <img
-              src={featured.img}
-              alt={featured.name}
-              className="w-full object-cover"
-            />
+  src={featured.img}
+  alt={featured.name}
+  className="w-full object-cover"
+/>
 
             <div className="p-6 text-center">
               <h2 className="text-4xl font-extrabold text-gray-900">
@@ -230,7 +244,7 @@ export default function ContactSection() {
     </h3>
 
     <div className="flex h-56 px-6 pb-6 gap-4 relative">
-      {/* Image Section */}
+       {/* Image Section */}
       <div className="w-1/2 h-full overflow-hidden rounded-xl relative left-5">
         <img
           src={leader.img}
@@ -238,6 +252,7 @@ export default function ContactSection() {
           className="w-full h-full object-cover"
         />
       </div>
+
 
       {/* Text Section – Centered */}
       <div className="w-1/2 flex flex-col justify-center items-center text-center">
