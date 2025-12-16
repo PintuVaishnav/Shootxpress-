@@ -26,14 +26,19 @@ export default function ContactSection() {
 
   const featuredMembers = [
     {
-      img: "https://raw.githubusercontent.com/PintuVaishanv/post-images/refs/heads/main/Untitled%20design.png",
-      name: "Somasani Sanvith",
-      role: "Founder & CEO",
+      img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11%20(1).png?raw=true",
+      name: "SOMASANI SANVITH",
+      role: "FOUNDER & CEO",
     },
     {
-      img: "https://github.com/PintuVaishanv/shootxpress/blob/main/Untitled%20design%20(1).png?raw=true",
-      name: "Yaswanth Kumar Kinthali",
-      role: "Managing Director",
+      img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11.png?raw=true",
+      name: "YASWANTH KUMAR KINTHALI",
+      role: "MANAGING DIRECTOR",
+    },
+    {
+      img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11%20(2).png?raw=true",
+      name: "SOMASANI GNANESHWARI",
+      role: "HEAD OF OPERATIONS",
     },
   ];
 
@@ -44,19 +49,24 @@ export default function ContactSection() {
 
   const leaders = [
     {
-      img: "https://raw.githubusercontent.com/PintuVaishanv/post-images/refs/heads/main/Untitled%20design.png",
-      name: "Rohit Sharma",
-      role: "Creative Director",
+      img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11%20(6).png?raw=true",
+      name: "MOOLA VENKATA SREESHANTH ",
+      role: "PHOTOGRAPHY HEAD",
     },
     {
-      img: "https://raw.githubusercontent.com/PintuVaishanv/post-images/refs/heads/main/Untitled%20design.png",
-      name: "Ananya Reddy",
-      role: "Operations Head",
+      img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11%20(5).png?raw=true",
+      name: "UDAY THOKATI",
+      role: "SENIOR REEL CREATOR",
     },
     {
-      img: "https://raw.githubusercontent.com/PintuVaishanv/post-images/refs/heads/main/Untitled%20design.png",
-      name: "Karthik Varma",
-      role: "Technical Lead",
+      img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11%20(4).png?raw=true",
+      name: "ADARASANI HARSHA",
+      role: "SENIOR REEL CREATOR",
+    },
+    {
+      img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11%20(3).png?raw=true",
+      name: "SHIVAGANESH KONGARI",
+      role: "REEL CREATOR",
     },
   ];
 
@@ -67,7 +77,7 @@ export default function ContactSection() {
   const submitContact = useMutation({
     mutationFn: async (data: typeof formData) => {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/contacts`,
+        ${import.meta.env.VITE_API_URL}/api/contacts,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -260,7 +270,7 @@ export default function ContactSection() {
 
     <div className="flex h-56 px-6 pb-6 gap-4 relative">
       {/* Image Section */}
-      <div className="w-1/2 h-full overflow-hidden rounded-xl relative left-8">
+      <div className="w-1/2 h-full overflow-hidden rounded-xl relative left-5">
         <img
           src={leader.img}
           alt={leader.name}
