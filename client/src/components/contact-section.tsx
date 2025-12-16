@@ -74,46 +74,7 @@ export default function ContactSection() {
 
   const { toast } = useToast();
 
-  const submitContact = useMutation({
-    mutationFn: async (data: typeof formData) => {
-      const response = await fetch(
-        ${import.meta.env.VITE_API_URL}/api/contacts,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        }
-      );
-      if (!response.ok) throw new Error("Failed to submit contact form");
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Message Sent!",
-        description: "Thank you for your message. We'll get back to you soon.",
-      });
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        eventType: "",
-        message: "",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    submitContact.mutate(formData);
-  };
+  
 
   return (
     <section id="contact" className="py-20 bg-background">
