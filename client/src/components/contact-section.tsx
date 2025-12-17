@@ -30,6 +30,15 @@ export default function ContactSection() {
       name: "SOMASANI SANVITH",
       role: "FOUNDER & CEO",
     },
+    
+  ];
+
+  const featured = featuredMembers[featuredIndex];
+
+  /* ---------------- LEADERSHIP MEMBERS (DIFFERENT) ---------------- */
+  const [leaderIndex, setLeaderIndex] = useState(0);
+
+  const leaders = [
     {
       img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11.png?raw=true",
       name: "YASWANTH KUMAR KINTHALI",
@@ -40,33 +49,20 @@ export default function ContactSection() {
       name: "SOMASANI GNANESHWARI",
       role: "HEAD OF OPERATIONS",
     },
-  ];
-
-  const featured = featuredMembers[featuredIndex];
-
-  /* ---------------- LEADERSHIP MEMBERS (DIFFERENT) ---------------- */
-  const [leaderIndex, setLeaderIndex] = useState(0);
-
-  const leaders = [
-    {
-      img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11%20(6).png?raw=true",
-      name: "MOOLA VENKATA SREESHANTH ",
-      role: "PHOTOGRAPHY HEAD",
-    },
     {
       img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11%20(5).png?raw=true",
       name: "UDAY THOKATI",
       role: "SENIOR REEL CREATOR",
     },
     {
-      img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11%20(4).png?raw=true",
-      name: "ADARASANI HARSHA",
-      role: "SENIOR REEL CREATOR",
-    },
-    {
       img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11%20(3).png?raw=true",
       name: "SHIVAGANESH KONGARI",
       role: "REEL CREATOR",
+    },
+    {
+      img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11%20(6).png?raw=true",
+      name: "MOOLA VENKATA SREESHANTH ",
+      role: "PHOTOGRAPHY HEAD",
     },
   ];
 
@@ -125,7 +121,7 @@ export default function ContactSection() {
               </p>
             </div>
 
-            <button
+            {/* <button
               onClick={() =>
                 setFeaturedIndex(
                   featuredIndex === 0
@@ -149,7 +145,7 @@ export default function ContactSection() {
               className="absolute right-3 top-1/2 -translate-y-1/2 bg-black text-white p-3 rounded-full"
             >
               ›
-            </button>
+            </button> */}
           </div>
 
           {/* RIGHT COLUMN */}
