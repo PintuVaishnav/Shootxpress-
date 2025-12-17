@@ -121,31 +121,7 @@ export default function ContactSection() {
               </p>
             </div>
 
-            {/* <button
-              onClick={() =>
-                setFeaturedIndex(
-                  featuredIndex === 0
-                    ? featuredMembers.length - 1
-                    : featuredIndex - 1
-                )
-              }
-              className="absolute left-3 top-1/2 -translate-y-1/2 bg-black text-white p-3 rounded-full"
-            >
-              ‹
-            </button>
-
-            <button
-              onClick={() =>
-                setFeaturedIndex(
-                  featuredIndex === featuredMembers.length - 1
-                    ? 0
-                    : featuredIndex + 1
-                )
-              }
-              className="absolute right-3 top-1/2 -translate-y-1/2 bg-black text-white p-3 rounded-full"
-            >
-              ›
-            </button> */}
+            
           </div>
 
           {/* RIGHT COLUMN */}

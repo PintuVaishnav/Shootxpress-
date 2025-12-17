@@ -13,6 +13,7 @@ import Footer from "@/components/footer";
 import BookingModal from "@/components/booking-modal";
 import TermsModal from "@/components/terms-modal";
 import BecomeMemberModal from "./components/becomemember-modal";
+import TestimonialsSection from "@/pages/Testimonials";
 
 function Router() {
   return (
@@ -21,6 +22,7 @@ function Router() {
       <Route path="/packages" component={Packages} />
       <Route path="/gallery" component={Gallery} />
       <Route path="/contact" component={Contact} />
+      <Route path="/Testimonials" component={TestimonialsSection} />
       <Route component={NotFound} />
     </Switch>
   );

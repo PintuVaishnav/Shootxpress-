@@ -25,6 +25,7 @@ export default function Navigation() {
     { href: "/packages", label: "Packages" },
     { href: "/gallery", label: "Gallery" },
     { href: "/contact", label: "Contact" },
+    { href: "/Testimonials", label: "Testimonials" },
   ];
 
   const openBookingModal = () => {

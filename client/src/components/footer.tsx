@@ -80,7 +80,7 @@ export default function Footer() {
         </div>
         
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
-          <p>&copy; 2025 ShootXpress. All rights reserved.</p>
+          <p>Designed And Developed By <a href="https://www.instagram.com/fz_insane/" className="text-primary hover:underline transition-colors">Vaishnav Yejju</a></p>
         </div>
       </div>
     </footer>
