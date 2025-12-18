@@ -217,11 +217,11 @@ export default function ContactSection() {
 
     <div className="flex h-56 px-6 pb-6 gap-4 relative">
        {/* Image Section */}
-      <div className="w-1/2 h-full overflow-hidden rounded-xl relative left-5">
+      <div className="w-1/2 h-full overflow-hidden rounded-xl relative left-5 bg-black">
         <img
           src={leader.img}
           alt={leader.name}
-          className="w-full h-full object-contain"
+          className="w-full h-full object-contain" 
         />
       </div>
 
