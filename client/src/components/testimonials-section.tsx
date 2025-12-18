@@ -6,11 +6,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const testimonials = [
   {
     id: 1,
-    name: "Sarah Jenkins",
-    role: "Wedding Client",
-    content: "The team was absolutely incredible! They captured moments I didn't even notice happening. The final photos brought tears to my eyes.",
+    name: "Manisha",
+    role: "Ayyappa pooja",
+    content: "You really had an amazing talent Sanvith…. Loved your edits keep growing all the best ♥️",
     rating: 5,
-    avatar: "SJ",
+    avatar: "M",
   },
   {
     id: 2,
