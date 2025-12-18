@@ -221,7 +221,7 @@ export default function ContactSection() {
         <img
           src={leader.img}
           alt={leader.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
         />
       </div>
 
