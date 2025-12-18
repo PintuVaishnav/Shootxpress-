@@ -13,45 +13,69 @@ const testimonials = [
     avatar: "M",
   },
   {
-    id: 2,
-    name: "Marcus Thorne",
-    role: "Event Organizer",
-    content: "Professional, punctual, and highly creative. The reels they produced for our corporate event went viral instantly.",
-    rating: 5,
-    avatar: "MT",
-  },
-  {
-    id: 3,
-    name: "Elena Rodriguez",
-    role: "Fashion Model",
-    content: "I've worked with many photographers, but ShootXpress has a unique eye for lighting and composition. Highly recommended!",
-    rating: 5,
-    avatar: "ER",
-  },
-  {
-    id: 4,
-    name: "David Kim",
-    role: "Marketing Director",
-    content: "The product photography completely transformed our e-commerce conversion rates. Worth every penny.",
-    rating: 5,
-    avatar: "DK",
-  },
-  {
-    id: 5,
-    name: "Jessica & Tom",
-    role: "Engagement Shoot",
-    content: "We are usually camera shy, but they made us feel so comfortable. The photos look natural and full of joy.",
-    rating: 5,
-    avatar: "JT",
-  },
-  {
-    id: 6,
-    name: "Global Tech Summit",
-    role: "Conference Host",
-    content: "Coverage was comprehensive and the highlight reel was delivered in record time. Exceptional service.",
-    rating: 4,
-    avatar: "GT",
-  },
+  id: 2,
+  name: "Purush",
+  role: "Cake Baking Shoot",
+  content:
+    "The reels came out extremely creative, crisp, and professional. Shoot X Press captured and edited everything beautifully. Highly recommended for high-quality reels and a smooth shooting experience.",
+  rating: 5,
+  avatar: "P",
+},
+{
+  id: 3,
+  name: "Chikki",
+  role: "House Warming Shoot",
+  content:
+    "Thank you for agreeing to shoot on such short notice. We loved the videos, especially the fast delivery timeline. Would definitely choose Shoot X Press again.",
+  rating: 5,
+  avatar: "C",
+},
+{
+  id: 4,
+  name: "Gayathri",
+  role: "Personal Shoot",
+  content:
+    "Had an amazing experience working with Sanvith. He made me feel comfortable and captured natural moments beautifully. The final photos exceeded my expectations.",
+  rating: 5,
+  avatar: "G",
+},
+{
+  id: 5,
+  name: "Shruthi",
+  role: "Engagement Instant Reel Gift",
+  content:
+    "The video is absolutely stunning. Turning the couple’s happiest memories into a video is truly an art, and your team nailed it. Wishing Shoot X Press continued success.",
+  rating: 5,
+  avatar: "S",
+},
+{
+  id: 6,
+  name: "Rishika",
+  role: "Reception Shoot",
+  content:
+    "Thank you Sanvith and Uday for the wonderful work. I truly appreciate the effort and professionalism. Best wishes to the entire Shoot X Press team.",
+  rating: 5,
+  avatar: "R",
+},
+{
+  id: 7,
+  name: "Shekar",
+  role: "Bangalore Car Delivery Shoot",
+  content:
+    "Amazing experience with Shoot X Press. Yashwant and the team were professional, creative, and patient. They captured every detail perfectly.",
+  rating: 5,
+  avatar: "S",
+},
+{
+  id: 8,
+  name: "Pavan faith",
+  role: "Car Delivery Shoot",
+  content:
+    "Excellent service with great visuals. I am very satisfied and will definitely refer Shoot X Press to my colleagues and friends.",
+  rating: 5,
+  avatar: "PF",
+},
+
 ];
 
 const ReviewCard = ({ item }: { item: typeof testimonials[0] }) => (
