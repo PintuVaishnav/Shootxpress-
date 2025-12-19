@@ -49,7 +49,6 @@ export class MemStorage implements IStorage {
         featured: true,
         createdAt: new Date(),
       },
-      
       {
         id: randomUUID(),
         title: "Birthday Party",
@@ -158,28 +157,52 @@ export class MemStorage implements IStorage {
 
   async createBooking(insertBooking: InsertBooking): Promise<Booking> {
     const id = randomUUID();
-    const booking: Booking = { 
-      ...insertBooking, 
+    const booking: Booking = {
       id,
+      firstName: insertBooking.firstName,
+      lastName: insertBooking.lastName,
+      email: insertBooking.email,
+      phone: insertBooking.phone,
+      eventDate: insertBooking.eventDate,
+      eventTime: insertBooking.eventTime,
+      eventType: insertBooking.eventType,
+      eventLocation: insertBooking.eventLocation,
+      packageType: insertBooking.packageType,
+      addOns: insertBooking.addOns || [],
+      specialRequirements: insertBooking.specialRequirements || null,
+      totalAmount: insertBooking.totalAmount,
+      advanceAmount: insertBooking.advanceAmount,
+      paymentStatus: insertBooking.paymentStatus || "pending",
+      paymentId: insertBooking.paymentId || null,
+      orderId: insertBooking.orderId || null,
+      phonepeTransactionId: insertBooking.phonepeTransactionId || null,
+      status: insertBooking.status || "pending",
+      termsAccepted: insertBooking.termsAccepted,
       createdAt: new Date(),
-      paymentId: null,
-      razorpayOrderId: null,
     };
+    
     this.bookings.set(id, booking);
+    console.log("📝 Booking created:", id, booking.email);
     return booking;
   }
 
   async updateBooking(id: string, updates: Partial<Booking>): Promise<Booking | undefined> {
     const existing = this.bookings.get(id);
-    if (!existing) return undefined;
+    if (!existing) {
+      console.log("❌ Booking not found:", id);
+      return undefined;
+    }
     
     const updated = { ...existing, ...updates };
     this.bookings.set(id, updated);
+    console.log("✅ Booking updated:", id);
     return updated;
   }
 
   async getAllBookings(): Promise<Booking[]> {
-    return Array.from(this.bookings.values());
+    return Array.from(this.bookings.values()).sort(
+      (a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
+    );
   }
 
   // Contact methods
@@ -189,18 +212,27 @@ export class MemStorage implements IStorage {
 
   async createContact(insertContact: InsertContact): Promise<Contact> {
     const id = randomUUID();
-    const contact: Contact = { 
-      ...insertContact, 
+    const contact: Contact = {
       id,
+      firstName: insertContact.firstName,
+      lastName: insertContact.lastName,
+      email: insertContact.email,
+      phone: insertContact.phone || null,
+      eventType: insertContact.eventType || null,
+      message: insertContact.message,
       status: "new",
       createdAt: new Date(),
     };
+    
     this.contacts.set(id, contact);
+    console.log("📧 Contact created:", id);
     return contact;
   }
 
   async getAllContacts(): Promise<Contact[]> {
-    return Array.from(this.contacts.values());
+    return Array.from(this.contacts.values()).sort(
+      (a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
+    );
   }
 
   // Portfolio methods
@@ -210,11 +242,12 @@ export class MemStorage implements IStorage {
 
   async createPortfolio(insertPortfolio: InsertPortfolio): Promise<Portfolio> {
     const id = randomUUID();
-    const portfolioItem: Portfolio = { 
-      ...insertPortfolio, 
+    const portfolioItem: Portfolio = {
       id,
+      ...insertPortfolio,
       createdAt: new Date(),
     };
+    
     this.portfolio.set(id, portfolioItem);
     return portfolioItem;
   }

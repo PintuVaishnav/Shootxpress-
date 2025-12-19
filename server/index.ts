@@ -1,14 +1,19 @@
+import 'dotenv/config';  // THIS MUST BE THE FIRST LINE!
 import express, { type Request, Response, NextFunction } from "express";
 import cors from "cors";
 import { registerRoutes } from "./routes";
+
+// Debug environment variables
+console.log("🔑 RAZORPAY_KEY_ID:", process.env.RAZORPAY_KEY_ID ? "✅ Loaded" : "❌ Missing");
+console.log("🔑 RAZORPAY_KEY_SECRET:", process.env.RAZORPAY_KEY_SECRET ? "✅ Loaded" : "❌ Missing");
 
 const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
   "https://shootxpress.vercel.app",
-  "https://shootxpress.in" ,
-  "https://www.shootxpress.in" 
+  "https://shootxpress.in",
+  "https://www.shootxpress.in"
 ];
 
 app.use(
