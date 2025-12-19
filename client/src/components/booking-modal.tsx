@@ -10,6 +10,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import emailjs from "@emailjs/browser";
 
+// API URL - empty for local dev (uses Vite proxy), full URL for production
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 interface BookingData {
   firstName: string;
   lastName: string;
@@ -123,7 +126,7 @@ export default function BookingModal() {
       });
     };
     document.body.appendChild(script);
-  }, []);
+  }, [toast]);
 
   // Calculate pricing
   const calculatePricing = useCallback(() => {
@@ -197,9 +200,9 @@ export default function BookingModal() {
     });
   };
 
-  // Create Razorpay Order - using relative URL (works with Vite proxy)
+  // Create Razorpay Order
   const createRazorpayOrder = async () => {
-    const response = await fetch('/api/payments/create-order', {
+    const response = await fetch(`${API_URL}/api/payments/create-order`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -217,7 +220,7 @@ export default function BookingModal() {
     });
 
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json().catch(() => ({ message: 'Failed to create order' }));
       throw new Error(error.message || 'Failed to create order');
     }
 
@@ -226,7 +229,7 @@ export default function BookingModal() {
 
   // Verify Payment
   const verifyPayment = async (paymentData: RazorpayResponse) => {
-    const response = await fetch('/api/payments/verify', {
+    const response = await fetch(`${API_URL}/api/payments/verify`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -237,7 +240,7 @@ export default function BookingModal() {
     });
 
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json().catch(() => ({ message: 'Payment verification failed' }));
       throw new Error(error.message || 'Payment verification failed');
     }
 
@@ -246,7 +249,7 @@ export default function BookingModal() {
 
   // Save booking to database
   const saveBooking = async (paymentId: string, orderId: string) => {
-    const response = await fetch('/api/bookings', {
+    const response = await fetch(`${API_URL}/api/bookings`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -267,11 +270,12 @@ export default function BookingModal() {
         orderId,
         paymentStatus: 'completed',
         status: 'confirmed',
+        termsAccepted: formData.termsAccepted,
       }),
     });
 
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json().catch(() => ({ message: 'Failed to save booking' }));
       throw new Error(error.message || 'Failed to save booking');
     }
 
@@ -404,7 +408,7 @@ export default function BookingModal() {
         prefill: {
           name: `${formData.firstName} ${formData.lastName}`,
           email: formData.email,
-          contact: formData.phone.replace(/\D/g, ''), // Remove non-digits
+          contact: formData.phone.replace(/\D/g, ''),
         },
         notes: {
           packageType: formData.packageType,
@@ -819,7 +823,7 @@ export default function BookingModal() {
             <Button
               type="submit"
               disabled={isLoading || !razorpayLoaded}
-              className="w-full h-14 text-lg font-bold bg-primary  transition-all duration-300 disabled:opacity-50"
+              className="w-full h-14 text-lg font-bold bg-primary transition-all duration-300 disabled:opacity-50"
               data-testid="submit-booking-button"
             >
               {isLoading ? (
