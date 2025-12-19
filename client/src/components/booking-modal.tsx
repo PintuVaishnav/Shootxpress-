@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { X, CreditCard, Shield } from "lucide-react";
+import { X, CreditCard, Shield, TestTube } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,15 @@ import emailjs from "@emailjs/browser";
 
 // API URL - empty for local dev (uses Vite proxy), full URL for production
 const API_URL = import.meta.env.VITE_API_URL || '';
+
+// Demo Mode - SET TO FALSE FOR PRODUCTION!
+const DEMO_MODE = true;
+
+// EmailJS Configuration
+const EMAIL_SERVICE_ID = import.meta.env.VITE_EMAIL_SERVICE_ID;
+const EMAIL_TEMPLATE_ID = import.meta.env.VITE_EMAIL_TEMPLATE_ID;
+const EMAIL_OWNER_TEMPLATE_ID = import.meta.env.VITE_EMAIL_OWNER_TEMPLATE_ID;
+const EMAIL_PUBLIC_KEY = import.meta.env.VITE_EMAIL_PUBLIC_KEY;
 
 interface BookingData {
   firstName: string;
@@ -75,7 +84,9 @@ const addOnPrices: Record<string, number> = {
 export default function BookingModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
   const [razorpayLoaded, setRazorpayLoaded] = useState(false);
+  const [emailjsInitialized, setEmailjsInitialized] = useState(false);
   const [formData, setFormData] = useState<BookingData>({
     firstName: "",
     lastName: "",
@@ -95,15 +106,41 @@ export default function BookingModal() {
 
   const { toast } = useToast();
 
+  // Initialize EmailJS
+  useEffect(() => {
+    if (EMAIL_PUBLIC_KEY) {
+      try {
+        emailjs.init({
+          publicKey: EMAIL_PUBLIC_KEY,
+          blockHeadless: true,
+          limitRate: {
+            id: 'app',
+            throttle: 10000,
+          },
+        });
+        setEmailjsInitialized(true);
+        console.log('✅ EmailJS initialized successfully');
+        console.log('📧 Config Check:', {
+          serviceId: EMAIL_SERVICE_ID ? '✓ Set' : '✗ Missing',
+          templateId: EMAIL_TEMPLATE_ID ? '✓ Set' : '✗ Missing',
+          ownerTemplateId: EMAIL_OWNER_TEMPLATE_ID ? '✓ Set' : '✗ Missing (optional)',
+          publicKey: EMAIL_PUBLIC_KEY ? '✓ Set' : '✗ Missing',
+        });
+      } catch (error) {
+        console.error('❌ EmailJS initialization failed:', error);
+      }
+    } else {
+      console.error('❌ EmailJS PUBLIC_KEY is missing!');
+    }
+  }, []);
+
   // Load Razorpay script
   useEffect(() => {
-    // Check if already loaded
     if (window.Razorpay) {
       setRazorpayLoaded(true);
       return;
     }
 
-    // Check if script already exists
     const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
     if (existingScript) {
       existingScript.addEventListener('load', () => setRazorpayLoaded(true));
@@ -119,14 +156,9 @@ export default function BookingModal() {
     };
     script.onerror = () => {
       console.error('❌ Failed to load Razorpay SDK');
-      toast({
-        title: "Error",
-        description: "Failed to load payment gateway. Please refresh the page.",
-        variant: "destructive",
-      });
     };
     document.body.appendChild(script);
-  }, [toast]);
+  }, []);
 
   // Calculate pricing
   const calculatePricing = useCallback(() => {
@@ -178,6 +210,7 @@ export default function BookingModal() {
   const closeModal = () => {
     setIsOpen(false);
     setIsLoading(false);
+    setIsDemoLoading(false);
     document.body.style.overflow = 'auto';
   };
 
@@ -198,6 +231,260 @@ export default function BookingModal() {
       advanceAmount: 750,
       termsAccepted: false,
     });
+  };
+
+  // Send confirmation emails via EmailJS
+  const sendConfirmationEmails = async (paymentId: string): Promise<{ customer: boolean; owner: boolean }> => {
+    const results = { customer: false, owner: false };
+
+    // Validate EmailJS configuration
+    if (!EMAIL_SERVICE_ID || !EMAIL_TEMPLATE_ID || !EMAIL_PUBLIC_KEY) {
+      console.error('❌ EmailJS configuration missing:', {
+        serviceId: !!EMAIL_SERVICE_ID,
+        templateId: !!EMAIL_TEMPLATE_ID,
+        publicKey: !!EMAIL_PUBLIC_KEY,
+      });
+      toast({
+        title: "Email Configuration Error",
+        description: "Email settings are not properly configured. Check console for details.",
+        variant: "destructive",
+      });
+      return results;
+    }
+
+    if (!emailjsInitialized) {
+      console.error('❌ EmailJS not initialized');
+      return results;
+    }
+
+    // Format add-ons for display
+    const formatAddOns = (addOns: string[]) => {
+      if (addOns.length === 0) return "None";
+      const labels: Record<string, string> = {
+        'extra-video': 'Extra Video (+₹700)',
+        'traditional-photos': 'Traditional Photos (+₹1000)',
+        'extra-hour': 'Extra Hour (+₹900)'
+      };
+      return addOns.map(a => labels[a] || a).join(", ");
+    };
+
+    // Format event date
+    const formatEventDate = (dateStr: string) => {
+      try {
+        return new Date(dateStr).toLocaleDateString('en-IN', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      } catch {
+        return dateStr;
+      }
+    };
+
+    // Customer email template params
+    const customerTemplateParams = {
+      to_name: `${formData.firstName} ${formData.lastName}`,
+      to_email: formData.email,
+      from_name: "Shoot X Press",
+      reply_to: "shootxpress27@gmail.com",
+      package_name: packageNames[formData.packageType] || formData.packageType,
+      advance_amount: formData.advanceAmount.toLocaleString('en-IN'),
+      total_amount: formData.totalAmount.toLocaleString('en-IN'),
+      balance_amount: (formData.totalAmount - formData.advanceAmount).toLocaleString('en-IN'),
+      phone: formData.phone,
+      event_date: formatEventDate(formData.eventDate),
+      event_time: formData.eventTime,
+      event_type: formData.eventType,
+      event_location: formData.eventLocation,
+      add_ons: formatAddOns(formData.addOns),
+      special_requirements: formData.specialRequirements || "None",
+      payment_id: paymentId,
+      booking_date: new Date().toLocaleDateString('en-IN'),
+    };
+
+    console.log('📧 Sending customer email...');
+    console.log('📧 To:', formData.email);
+    console.log('📧 Template params:', customerTemplateParams);
+
+    try {
+      const customerResult = await emailjs.send(
+        EMAIL_SERVICE_ID,
+        EMAIL_TEMPLATE_ID,
+        customerTemplateParams
+      );
+      
+      console.log("✅ Customer email sent!", customerResult);
+      results.customer = true;
+      
+      toast({
+        title: "📧 Customer Email Sent!",
+        description: `Confirmation sent to ${formData.email}`,
+      });
+    } catch (error: any) {
+      console.error("❌ Failed to send customer email:", error);
+      toast({
+        title: "Customer Email Failed",
+        description: error?.text || error?.message || "Unknown error",
+        variant: "destructive",
+      });
+    }
+
+    // Owner email template params
+    const ownerTemplateParams = {
+      to_name: "Shoot X Press Team",
+      to_email: "shootxpress27@gmail.com",
+      from_name: "Booking System",
+      customer_name: `${formData.firstName} ${formData.lastName}`,
+      customer_email: formData.email,
+      customer_phone: formData.phone,
+      package_name: packageNames[formData.packageType] || formData.packageType,
+      advance_amount: formData.advanceAmount.toLocaleString('en-IN'),
+      total_amount: formData.totalAmount.toLocaleString('en-IN'),
+      balance_amount: (formData.totalAmount - formData.advanceAmount).toLocaleString('en-IN'),
+      phone: formData.phone,
+      event_date: formatEventDate(formData.eventDate),
+      event_time: formData.eventTime,
+      event_type: formData.eventType,
+      event_location: formData.eventLocation,
+      add_ons: formatAddOns(formData.addOns),
+      special_requirements: formData.specialRequirements || "None",
+      payment_id: paymentId,
+      booking_date: new Date().toLocaleDateString('en-IN'),
+    };
+
+    console.log('📧 Sending owner notification email...');
+
+    try {
+      const ownerTemplateId = EMAIL_OWNER_TEMPLATE_ID || EMAIL_TEMPLATE_ID;
+      const ownerResult = await emailjs.send(
+        EMAIL_SERVICE_ID,
+        ownerTemplateId,
+        ownerTemplateParams
+      );
+      
+      console.log("📩 Owner email sent!", ownerResult);
+      results.owner = true;
+      
+      toast({
+        title: "📩 Admin Notification Sent!",
+        description: "Owner has been notified of the new booking",
+      });
+    } catch (error: any) {
+      console.error("❌ Failed to send owner email:", error);
+      toast({
+        title: "Admin Email Failed",
+        description: error?.text || error?.message || "Unknown error",
+        variant: "destructive",
+      });
+    }
+
+    return results;
+  };
+
+  // DEMO MODE: Test emails without payment
+  const handleDemoBooking = async () => {
+    // Validate form first
+    if (!validateForm()) return;
+
+    setIsDemoLoading(true);
+    
+    // Generate fake payment ID for demo
+    const demoPaymentId = `DEMO_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    console.log('🧪 DEMO MODE: Simulating booking...');
+    console.log('🧪 Demo Payment ID:', demoPaymentId);
+
+    try {
+      // Send confirmation emails
+      const emailResults = await sendConfirmationEmails(demoPaymentId);
+      
+      console.log('🧪 Email Results:', emailResults);
+
+      if (emailResults.customer || emailResults.owner) {
+        toast({
+          title: "🧪 Demo Booking Complete!",
+          description: `Customer email: ${emailResults.customer ? '✅' : '❌'} | Admin email: ${emailResults.owner ? '✅' : '❌'}`,
+        });
+      } else {
+        toast({
+          title: "🧪 Demo Failed",
+          description: "No emails were sent. Check console for errors.",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      console.error('🧪 Demo error:', error);
+      toast({
+        title: "Demo Error",
+        description: error.message || "Something went wrong",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDemoLoading(false);
+    }
+  };
+
+  // Form validation
+  const validateForm = (): boolean => {
+    if (!formData.termsAccepted) {
+      toast({
+        title: "Terms Required",
+        description: "Please accept the terms and conditions to proceed.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (!formData.firstName.trim() || !formData.lastName.trim()) {
+      toast({
+        title: "Missing Name",
+        description: "Please enter your first and last name.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (!formData.phone.trim() || formData.phone.replace(/\D/g, '').length < 10) {
+      toast({
+        title: "Invalid Phone",
+        description: "Please enter a valid 10-digit phone number.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (!formData.eventDate || !formData.eventTime || !formData.eventType || !formData.eventLocation.trim()) {
+      toast({
+        title: "Missing Event Details",
+        description: "Please fill in all event details.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    const selectedDate = new Date(formData.eventDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (selectedDate < today) {
+      toast({
+        title: "Invalid Date",
+        description: "Please select a future date for your event.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    return true;
   };
 
   // Create Razorpay Order
@@ -282,66 +569,6 @@ export default function BookingModal() {
     return response.json();
   };
 
-  // Send confirmation emails via EmailJS
-  const sendConfirmationEmails = async () => {
-    try {
-      // Send to customer
-      await emailjs.send(
-        import.meta.env.VITE_EMAIL_SERVICE_ID,
-        import.meta.env.VITE_EMAIL_TEMPLATE_ID,
-        {
-          to_name: `${formData.firstName} ${formData.lastName}`,
-          to_email: formData.email,
-          package_name: packageNames[formData.packageType] || formData.packageType,
-          advance_amount: formData.advanceAmount.toLocaleString('en-IN'),
-          total_amount: formData.totalAmount.toLocaleString('en-IN'),
-          balance_amount: (formData.totalAmount - formData.advanceAmount).toLocaleString('en-IN'),
-          phone: formData.phone,
-          event_date: new Date(formData.eventDate).toLocaleDateString('en-IN', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          }),
-          event_time: formData.eventTime,
-          event_type: formData.eventType,
-          event_location: formData.eventLocation,
-          add_ons: formData.addOns.length > 0 ? formData.addOns.join(", ") : "None",
-          special_requirements: formData.specialRequirements || "None",
-        },
-        import.meta.env.VITE_EMAIL_PUBLIC_KEY
-      );
-      console.log("✅ Confirmation email sent to customer!");
-
-      // Send notification to owner
-      await emailjs.send(
-        import.meta.env.VITE_EMAIL_SERVICE_ID,
-        import.meta.env.VITE_EMAIL_OWNER_TEMPLATE_ID || import.meta.env.VITE_EMAIL_TEMPLATE_ID,
-        {
-          to_name: "ShootXPress Team",
-          to_email: "shootxpress27@gmail.com",
-          customer_name: `${formData.firstName} ${formData.lastName}`,
-          customer_email: formData.email,
-          customer_phone: formData.phone,
-          package_name: packageNames[formData.packageType] || formData.packageType,
-          advance_amount: formData.advanceAmount.toLocaleString('en-IN'),
-          total_amount: formData.totalAmount.toLocaleString('en-IN'),
-          event_date: formData.eventDate,
-          event_time: formData.eventTime,
-          event_type: formData.eventType,
-          event_location: formData.eventLocation,
-          add_ons: formData.addOns.length > 0 ? formData.addOns.join(", ") : "None",
-          special_requirements: formData.specialRequirements || "None",
-        },
-        import.meta.env.VITE_EMAIL_PUBLIC_KEY
-      );
-      console.log("📩 Notification email sent to owner!");
-    } catch (error) {
-      console.error("❌ Failed to send email:", error);
-      // Don't throw - emails are not critical for booking success
-    }
-  };
-
   // Handle Razorpay Payment
   const handleRazorpayPayment = async () => {
     if (!razorpayLoaded || !window.Razorpay) {
@@ -356,11 +583,9 @@ export default function BookingModal() {
     setIsLoading(true);
 
     try {
-      // Step 1: Create order on backend
       const order = await createRazorpayOrder();
       console.log('📦 Order created:', order.id);
 
-      // Step 2: Open Razorpay checkout
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: order.amount,
@@ -373,24 +598,22 @@ export default function BookingModal() {
           try {
             console.log('💳 Payment received:', response.razorpay_payment_id);
 
-            // Step 3: Verify payment on backend
             await verifyPayment(response);
             console.log('✅ Payment verified');
 
-            // Step 4: Save booking
             const booking = await saveBooking(
               response.razorpay_payment_id,
               response.razorpay_order_id
             );
             console.log('📝 Booking saved:', booking.id);
 
-            // Step 5: Send confirmation emails
-            await sendConfirmationEmails();
+            const emailResults = await sendConfirmationEmails(response.razorpay_payment_id);
 
-            // Step 6: Show success message
             toast({
               title: "🎉 Booking Confirmed!",
-              description: "Your booking has been confirmed. Check your email for details.",
+              description: emailResults.customer 
+                ? "Your booking has been confirmed. Check your email for details."
+                : "Your booking has been confirmed. Confirmation email will be sent shortly.",
             });
 
             closeModal();
@@ -458,68 +681,7 @@ export default function BookingModal() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validate terms
-    if (!formData.termsAccepted) {
-      toast({
-        title: "Terms Required",
-        description: "Please accept the terms and conditions to proceed.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validate personal info
-    if (!formData.firstName.trim() || !formData.lastName.trim()) {
-      toast({
-        title: "Missing Name",
-        description: "Please enter your first and last name.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      toast({
-        title: "Invalid Email",
-        description: "Please enter a valid email address.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!formData.phone.trim() || formData.phone.replace(/\D/g, '').length < 10) {
-      toast({
-        title: "Invalid Phone",
-        description: "Please enter a valid 10-digit phone number.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validate event details
-    if (!formData.eventDate || !formData.eventTime || !formData.eventType || !formData.eventLocation.trim()) {
-      toast({
-        title: "Missing Event Details",
-        description: "Please fill in all event details.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Check if date is in the future
-    const selectedDate = new Date(formData.eventDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (selectedDate < today) {
-      toast({
-        title: "Invalid Date",
-        description: "Please select a future date for your event.",
-        variant: "destructive",
-      });
-      return;
-    }
-
+    if (!validateForm()) return;
     handleRazorpayPayment();
   };
 
@@ -541,11 +703,30 @@ export default function BookingModal() {
     window.dispatchEvent(event);
   };
 
-  // Get minimum date for date picker
   const getMinDate = () => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     return tomorrow.toISOString().split('T')[0];
+  };
+
+  // Quick fill for testing
+  const fillTestData = () => {
+    setFormData(prev => ({
+      ...prev,
+      firstName: "Test",
+      lastName: "User",
+      email: "your-email@gmail.com", // Change this to your email!
+      phone: "+91 9876543210",
+      eventDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      eventTime: "10:00",
+      eventType: "birthday",
+      eventLocation: "Test Venue, Hyderabad",
+      termsAccepted: true,
+    }));
+    toast({
+      title: "Test Data Filled",
+      description: "Form filled with test data. Update email to receive test emails!",
+    });
   };
 
   if (!isOpen) return null;
@@ -560,24 +741,75 @@ export default function BookingModal() {
         <div className="relative bg-white dark:bg-gray-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
           {/* Header */}
           <div className="sticky top-0 bg-white dark:bg-gray-900 z-10 px-8 py-4 border-b flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-foreground">Book Your Shoot</h2>
+            <div>
+              <h2 className="text-2xl font-bold text-foreground">Book Your Shoot</h2>
+              {DEMO_MODE && (
+                <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                  🧪 Demo Mode Enabled
+                </span>
+              )}
+            </div>
             <Button
               variant="ghost"
               size="icon"
               onClick={closeModal}
               className="hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
-              data-testid="close-booking-modal"
             >
               <X className="h-5 w-5" />
             </Button>
           </div>
+
+          {/* Demo Controls */}
+          {DEMO_MODE && (
+            <div className="mx-8 mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+              <h3 className="font-bold text-yellow-800 dark:text-yellow-200 mb-2 flex items-center gap-2">
+                <TestTube className="h-4 w-4" />
+                Demo Mode Controls
+              </h3>
+              <p className="text-sm text-yellow-700 dark:text-yellow-300 mb-3">
+                Test the email flow without making real payments. Remember to update the email field to your own email!
+              </p>
+              <div className="flex gap-2 flex-wrap">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={fillTestData}
+                  className="bg-yellow-100 hover:bg-yellow-200 border-yellow-300"
+                >
+                  📝 Fill Test Data
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    console.log('📧 EmailJS Config:', {
+                      serviceId: EMAIL_SERVICE_ID,
+                      templateId: EMAIL_TEMPLATE_ID,
+                      ownerTemplateId: EMAIL_OWNER_TEMPLATE_ID,
+                      publicKey: EMAIL_PUBLIC_KEY ? '✓ Set' : '✗ Missing',
+                      initialized: emailjsInitialized,
+                    });
+                    toast({
+                      title: "Config Logged",
+                      description: "Check browser console for EmailJS configuration",
+                    });
+                  }}
+                  className="bg-blue-100 hover:bg-blue-200 border-blue-300"
+                >
+                  🔧 Log Config
+                </Button>
+              </div>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="p-8 space-y-6">
             {/* Package Selection */}
             <div>
               <Label className="block text-sm font-semibold text-foreground mb-2">Selected Package *</Label>
               <Select value={formData.packageType} onValueChange={(value) => handleInputChange('packageType', value)}>
-                <SelectTrigger data-testid="select-package" className="h-12">
+                <SelectTrigger className="h-12">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -600,7 +832,6 @@ export default function BookingModal() {
                   placeholder="Sanvith"
                   className="h-12"
                   required
-                  data-testid="input-booking-first-name"
                 />
               </div>
               <div>
@@ -612,7 +843,6 @@ export default function BookingModal() {
                   placeholder="Somasani"
                   className="h-12"
                   required
-                  data-testid="input-booking-last-name"
                 />
               </div>
             </div>
@@ -624,10 +854,9 @@ export default function BookingModal() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  placeholder="somasanisanvith@gmail.com"
+                  placeholder="your-email@gmail.com"
                   className="h-12"
                   required
-                  data-testid="input-booking-email"
                 />
               </div>
               <div>
@@ -639,7 +868,6 @@ export default function BookingModal() {
                   placeholder="+91 9876543210"
                   className="h-12"
                   required
-                  data-testid="input-booking-phone"
                 />
               </div>
             </div>
@@ -655,7 +883,6 @@ export default function BookingModal() {
                   min={getMinDate()}
                   className="h-12"
                   required
-                  data-testid="input-event-date"
                 />
               </div>
               <div>
@@ -666,7 +893,6 @@ export default function BookingModal() {
                   onChange={(e) => handleInputChange('eventTime', e.target.value)}
                   className="h-12"
                   required
-                  data-testid="input-event-time"
                 />
               </div>
             </div>
@@ -674,7 +900,7 @@ export default function BookingModal() {
             <div>
               <Label className="block text-sm font-semibold text-foreground mb-2">Event Type *</Label>
               <Select value={formData.eventType} onValueChange={(value) => handleInputChange('eventType', value)}>
-                <SelectTrigger data-testid="select-event-type-booking" className="h-12">
+                <SelectTrigger className="h-12">
                   <SelectValue placeholder="Select event type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -698,7 +924,6 @@ export default function BookingModal() {
                 placeholder="Venue name, City"
                 className="h-12"
                 required
-                data-testid="input-event-location"
               />
             </div>
 
@@ -720,7 +945,6 @@ export default function BookingModal() {
                         id={addon.id}
                         checked={formData.addOns.includes(addon.id)}
                         onCheckedChange={(checked) => handleAddOnChange(addon.id, checked as boolean)}
-                        data-testid={`addon-${addon.id}`}
                       />
                       <Label htmlFor={addon.id} className="cursor-pointer font-medium">
                         {addon.label}
@@ -742,7 +966,6 @@ export default function BookingModal() {
                 placeholder="Any special requests, song preferences, or requirements..."
                 rows={3}
                 className="resize-none"
-                data-testid="textarea-special-requirements"
               />
             </div>
 
@@ -763,7 +986,6 @@ export default function BookingModal() {
                     id="terms"
                     checked={formData.termsAccepted}
                     onCheckedChange={(checked) => handleInputChange('termsAccepted', checked as boolean)}
-                    data-testid="checkbox-terms"
                   />
                   <Label htmlFor="terms" className="text-sm cursor-pointer">
                     I agree to the{" "}
@@ -771,7 +993,6 @@ export default function BookingModal() {
                       type="button"
                       onClick={openTermsModal}
                       className="text-primary hover:underline font-medium"
-                      data-testid="link-terms"
                     >
                       terms and conditions
                     </button>
@@ -790,26 +1011,22 @@ export default function BookingModal() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span>Package ({packageNames[formData.packageType]}):</span>
-                    <span data-testid="package-cost">
-                      ₹{packagePrices[formData.packageType]?.toLocaleString('en-IN')}
-                    </span>
+                    <span>₹{packagePrices[formData.packageType]?.toLocaleString('en-IN')}</span>
                   </div>
                   {formData.addOns.length > 0 && (
                     <div className="flex justify-between">
                       <span>Add-ons:</span>
-                      <span data-testid="addons-cost">
-                        ₹{formData.addOns.reduce((sum, addon) => sum + (addOnPrices[addon] || 0), 0).toLocaleString('en-IN')}
-                      </span>
+                      <span>₹{formData.addOns.reduce((sum, addon) => sum + (addOnPrices[addon] || 0), 0).toLocaleString('en-IN')}</span>
                     </div>
                   )}
                   <div className="border-t pt-2 mt-2">
                     <div className="flex justify-between font-bold text-base">
                       <span>Total Amount:</span>
-                      <span data-testid="total-cost">₹{formData.totalAmount.toLocaleString('en-IN')}</span>
+                      <span>₹{formData.totalAmount.toLocaleString('en-IN')}</span>
                     </div>
                     <div className="flex justify-between text-primary font-bold text-lg mt-1">
                       <span>Pay Now (50%):</span>
-                      <span data-testid="advance-cost">₹{formData.advanceAmount.toLocaleString('en-IN')}</span>
+                      <span>₹{formData.advanceAmount.toLocaleString('en-IN')}</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-2">
                       * Remaining ₹{(formData.totalAmount - formData.advanceAmount).toLocaleString('en-IN')} to be paid on event day
@@ -819,30 +1036,57 @@ export default function BookingModal() {
               </CardContent>
             </Card>
 
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              disabled={isLoading || !razorpayLoaded}
-              className="w-full h-14 text-lg font-bold bg-primary transition-all duration-300 disabled:opacity-50"
-              data-testid="submit-booking-button"
-            >
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  Processing...
-                </span>
-              ) : !razorpayLoaded ? (
-                <span>Loading Payment Gateway...</span>
-              ) : (
-                <span className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5" />
-                  Pay ₹{formData.advanceAmount.toLocaleString('en-IN')} & Book Now
-                </span>
+            {/* Submit Buttons */}
+            <div className="space-y-3">
+              {/* Demo Button */}
+              {DEMO_MODE && (
+                <Button
+                  type="button"
+                  onClick={handleDemoBooking}
+                  disabled={isDemoLoading}
+                  className="w-full h-14 text-lg font-bold bg-yellow-500 hover:bg-yellow-600 text-black transition-all duration-300"
+                >
+                  {isDemoLoading ? (
+                    <span className="flex items-center gap-2">
+                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Sending Test Emails...
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <TestTube className="h-5 w-5" />
+                      🧪 Test Emails (Demo - No Payment)
+                    </span>
+                  )}
+                </Button>
               )}
-            </Button>
+
+              {/* Real Payment Button */}
+              <Button
+                type="submit"
+                disabled={isLoading || !razorpayLoaded}
+                className="w-full h-14 text-lg font-bold bg-primary transition-all duration-300 disabled:opacity-50"
+              >
+                {isLoading ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Processing...
+                  </span>
+                ) : !razorpayLoaded ? (
+                  <span>Loading Payment Gateway...</span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <CreditCard className="h-5 w-5" />
+                    Pay ₹{formData.advanceAmount.toLocaleString('en-IN')} & Book Now
+                  </span>
+                )}
+              </Button>
+            </div>
 
             <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <Shield className="h-4 w-4" />

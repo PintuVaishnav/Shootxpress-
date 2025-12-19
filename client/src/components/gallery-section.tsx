@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { Portfolio } from "@shared/schema";
 
+// API URL - empty for local dev (uses Vite proxy), full URL for production
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 const categories = ["All", "Events", "Portraits", "Reels"];
 
 export default function GallerySection() {
@@ -16,8 +19,8 @@ export default function GallerySection() {
     queryKey: ['/portfolio', activeCategory === "All" ? undefined : activeCategory.toLowerCase()],
     queryFn: async () => {
       const url = activeCategory === "All"
-        ? `/api/portfolio`
-        : `/api/portfolio?category=${encodeURIComponent(activeCategory)}`;
+        ? `${API_URL}/api/portfolio`
+        : `${API_URL}/api/portfolio?category=${encodeURIComponent(activeCategory)}`;
       const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to fetch portfolio');
       return response.json();
