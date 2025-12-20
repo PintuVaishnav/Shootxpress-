@@ -1,11 +1,92 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown, Camera, AlertTriangle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import confetti from "canvas-confetti";
 
 export default function Hero() {
   const [showAlert, setShowAlert] = useState(false);
+  const [showWelcome, setShowWelcome] = useState<boolean>(false);
+
+  // Professional Celebration Effect
+  useEffect(() => {
+    const showCelebration = sessionStorage.getItem("showCelebration");
+
+    if (showCelebration === "true") {
+      sessionStorage.removeItem("showCelebration");
+      setShowWelcome(true);
+
+      const colors: string[] = ["#dc2626", "#ffffff", "#fbbf24"];
+
+      // Initial Big Burst
+      confetti({
+        particleCount: 200,
+        spread: 180,
+        startVelocity: 50,
+        origin: { y: 0.6 },
+        colors: colors,
+        ticks: 200,
+        zIndex: 9999,
+      });
+
+      // Continuous Side Cannons - Slower and More Visible
+      const cannonInterval = setInterval(() => {
+        // Left Cannon
+        confetti({
+          particleCount: 80,
+          angle: 45,
+          spread: 50,
+          startVelocity: 60,
+          origin: { x: 0, y: 0.7 },
+          colors: colors,
+          ticks: 150,
+          zIndex: 9999,
+          gravity: 0.8,
+        });
+
+        // Right Cannon
+        confetti({
+          particleCount: 40,
+          angle: 135,
+          spread: 50,
+          startVelocity: 60,
+          origin: { x: 1, y: 0.7 },
+          colors: colors,
+          ticks: 150,
+          zIndex: 9999,
+          gravity: 0.8,
+        });
+      }, 1000); // Slower interval
+
+      // Fireworks Effect
+      const fireworksInterval = setInterval(() => {
+        const x = Math.random() * 0.6 + 0.2; // Between 0.2 and 0.8
+
+        confetti({
+          particleCount: 50,
+          spread: 360,
+          startVelocity: 40,
+          origin: { x: x, y: 0.3 },
+          colors: colors,
+          ticks: 120,
+          zIndex: 9999,
+          gravity: 0.6,
+        });
+      }, 800);
+
+      // Stop after 3 seconds
+      setTimeout(() => {
+        clearInterval(cannonInterval);
+        clearInterval(fireworksInterval);
+      }, 3000);
+
+      // Hide banner after 5 seconds
+      setTimeout(() => {
+        setShowWelcome(false);
+      }, 5000);
+    }
+  }, []);
 
   const openBookingModal = () => {
     window.dispatchEvent(new CustomEvent("openBookingModal"));
@@ -34,8 +115,38 @@ export default function Hero() {
   return (
     <>
       <section className="hero-bg min-h-screen flex items-center justify-center relative overflow-hidden">
+        {/* Welcome Banner */}
+        {showWelcome && (
+          <div
+            className="fixed top-0 left-0 right-0 z-50"
+            style={{ animation: "bannerSlide 0.5s ease-out" }}
+          >
+            <div className="bg-red-600 py-4 px-4 text-center">
+              <p className="text-white text-lg md:text-2xl font-bold tracking-wider uppercase">
+                Welcome to SHOOT<span className="text-gray-900">X</span>PRESS —
+                We Are Now Live
+              </p>
+            </div>
+          </div>
+        )}
+
         <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
           <div className="animate-fade-in">
+            {/* Launch Badge */}
+            {showWelcome && (
+              <div
+                className="mb-6"
+                style={{ animation: "fadeInUp 0.8s ease-out" }}
+              >
+                <span
+                  className="inline-block bg-gray-900 text-white border-2 border-red-600 
+                               px-6 py-2 text-sm md:text-base font-bold tracking-wider uppercase"
+                >
+                  Just Launched
+                </span>
+              </div>
+            )}
+
             <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight">
               CAPTURE <br />
               <span className="text-primary">MOMENTS</span> <br />
@@ -79,6 +190,29 @@ export default function Hero() {
             <ChevronDown className="text-white h-8 w-8" />
           </div>
         </div>
+
+        {/* Banner Animation Style */}
+        <style>{`
+          @keyframes bannerSlide {
+            0% {
+              transform: translateY(-100%);
+            }
+            100% {
+              transform: translateY(0);
+            }
+          }
+
+          @keyframes fadeInUp {
+            0% {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            100% {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `}</style>
       </section>
 
       {/* Alert Modal */}
