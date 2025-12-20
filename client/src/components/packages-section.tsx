@@ -17,7 +17,7 @@ const packages: Package[] = [
     price: 1499,
     features: [
       { icon: Video, text: "1 Reel" },
-      { icon: Clock, text: "Up to 1.5-hour shoot" },
+      { icon: Clock, text: "Up to 1-hour shoot" },
       { icon: Edit, text: "30-45 min editing" },
       { icon: Camera, text: "No Raw Data" },
     ],
@@ -29,7 +29,7 @@ const packages: Package[] = [
     popular: true,
     features: [
       { icon: Video, text: "2 Reels" },
-      { icon: Clock, text: "Up to 3-hours shoot" },
+      { icon: Clock, text: "Up to 2.5-hours shoot" },
       { icon: Rocket, text: "Fast same-day delivery" },
       { icon: Camera, text: "No Raw Data" },
     ],
