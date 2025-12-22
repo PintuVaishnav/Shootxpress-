@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -15,10 +14,6 @@ import BookingModal from "@/components/booking-modal";
 import TermsModal from "@/components/terms-modal";
 import BecomeMemberModal from "./components/becomemember-modal";
 import TestimonialsSection from "@/pages/Testimonials";
-import LaunchPage from "./components/LaunchPage";
-
-const LOGO_URL = "https://raw.githubusercontent.com/PintuVaishanv/shootxpress/main/logo.png";
-
 
 function Router() {
   return (
@@ -34,37 +29,19 @@ function Router() {
 }
 
 function App() {
-  const [isLaunched, setIsLaunched] = useState<boolean>(false);
-
-  const handleLaunchComplete = (): void => {
-    setIsLaunched(true);
-  };
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        {!isLaunched && (
-          <LaunchPage 
-            onLaunchComplete={handleLaunchComplete} 
-            logoUrl={LOGO_URL}  // 👈 Pass your logo URL here
-          />
-        )}
-
-        {isLaunched && (
-          <>
-            <div className="min-h-screen flex flex-col">
-              <Navigation />
-              <main className="flex-1">
-                <Router />
-              </main>
-              <Footer />
-            </div>
-            <BookingModal />
-            <BecomeMemberModal />
-            <TermsModal />
-          </>
-        )}
-
+        <div className="min-h-screen flex flex-col">
+          <Navigation />
+          <main className="flex-1">
+            <Router />
+          </main>
+          <Footer />
+        </div>
+        <BookingModal />
+        <BecomeMemberModal />
+        <TermsModal />
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
