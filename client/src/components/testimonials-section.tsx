@@ -2,7 +2,7 @@ import { Star, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-// Dummy data
+
 const testimonials = [
   {
     id: 1,
@@ -74,6 +74,15 @@ const testimonials = [
     "Excellent service with great visuals. I am very satisfied and will definitely refer Shoot X Press to my colleagues and friends.",
   rating: 5,
   avatar: "PF",
+},
+{
+  id: 9,
+  name: "Satya-vijay",
+  role: "Full wedding coverage",
+  content:
+    "Words truly fall short in expressing our gratitude. I was skeptical at first about booking people I didn’t know, wondering how the experience would be and whether I’d feel comfortable. But you both were absolutely amazing! You were incredibly accommodating, friendly, and efficient—and in such a short time, I feel I’ve gained two wonderful friends.After a long wait, I finally married the love of my life, and I wanted every moment to be celebrated and captured beautifully. You did exactly that and more ❣️",
+  rating: 5,
+  avatar: "SV",
 },
 
 ];
