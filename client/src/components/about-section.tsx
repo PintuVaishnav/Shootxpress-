@@ -49,7 +49,7 @@ export default function AboutSection() {
           
           <div className="relative">
             <img 
-              src="https://raw.githubusercontent.com/PintuVaishanv/post-images/refs/heads/main/IMG_6505.JPG"
+              src="/assets/IMG_2029.JPEG"
               alt="Professional photographer working on creative shoot"
               className="rounded-xl shadow-2xl w-full"
               data-testid="about-image"
