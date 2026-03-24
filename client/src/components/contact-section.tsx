@@ -42,17 +42,12 @@ export default function ContactSection() {
     {
       img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11.png?raw=true",
       name: "YASWANTH KUMAR KINTHALI",
-      role: "MANAGING DIRECTOR",
+      role: "MANAGING DIRECTOR(BLR)",
     },
     {
       img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11%20(2).png?raw=true",
       name: "SOMASANI GNANESHWARI",
-      role: "HEAD OF OPERATIONS",
-    },
-    {
-      img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11%20(5).png?raw=true",
-      name: "UDAY THOKATI",
-      role: "SENIOR REEL CREATOR",
+      role: "MANAGER",
     },
     {
       img: "https://github.com/PintuVaishanv/shootxpress/blob/main/11%20(3).png?raw=true",
